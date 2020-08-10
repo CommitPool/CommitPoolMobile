@@ -1,22 +1,70 @@
-import React from 'react';
+import React, { useState, useEffect }  from 'react';
 import { StyleSheet, Text, View } from 'react-native';
 import logo from './strava-2.svg';
 import {vmin} from 'react-native-expo-viewport-units';
+import { hooks } from "tasit";
+const { useAccount } = hooks;
 import config from './app.config.js'
 
 var strava = require("strava-v3");
 var axios = require("axios");
 var moment = require("moment");
 
-class App extends React.Component {
+import * as Random from "expo-random";
+
+export default function App() {
+
+  const [randomBytes, setRandomBytes] = useState(new Uint8Array());
+
+  useEffect(() => {
+    let isMounted = true;
+    async function makeRandomBytes() {
+      const randomBytesThatWereGenerated = await Random.getRandomBytesAsync(16);
+      if (isMounted) {
+        console.log("randomBytes generated");
+        setRandomBytes(randomBytesThatWereGenerated);
+      }
+    }
+    makeRandomBytes();
+    return () => {
+      isMounted = false;
+    };
+  }, []); // Just run this once
+
+  const randomBytesGenerated = randomBytes.length !== 0;
+
+  const address = useAccount({
+    randomBytes,
+    randomBytesGenerated,
+  });
+
+
+  console.log({ address });
+  
+  return (
+    <Home address={address}></Home>
+  )
+
+}
+
+
+class Home extends React.Component <{address: String}> {
   state = {
     accessToken: "",
     message: "Awaiting accesstoken",
+    address: ""
   };
 
   async componentDidMount() {
+    console.log('props', this.props.address)
     this.getAccesstoken();
   }
+
+  // static getDerivedStateFromProps(nextProps, prevState) {
+  //   return {
+  //    address: nextProps.address,
+  //   };
+  //  }
 
   // Use env credentials to call Strava API and get access token to API calls for user data
   // TODO replace refresh_token via call to DB
@@ -106,12 +154,14 @@ class App extends React.Component {
   };
 
   render() {
+    console.log("render")
     return (
       <View style={styles.container}>
         <View style={styles.AppHeader}>
           <img src={logo} style={{height: vmin(40)}} alt="logo" />
           <h1>Strava Client</h1>
-          {/* <h2>{this.state.message}</h2> */}
+          <h2>{this.state.message}</h2>
+          <p>{this.props.address}</p>
         </View>
       </View>
     );
@@ -138,5 +188,3 @@ const styles = StyleSheet.create({
     color: 'white'
   }
 });
-
-export default App;
