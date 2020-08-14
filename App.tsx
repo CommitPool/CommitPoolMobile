@@ -9,6 +9,7 @@ import config from './app.config.js'
 import abi from './abi.json'
 import { ethers } from 'ethers';
 import { AsyncStorage } from 'react-native';
+import Login from './SignIn'
 
 
 var strava = require("strava-v3");
@@ -20,7 +21,7 @@ import * as Random from "expo-random";
 export default function App() {
   
   return (
-    <Home></Home>
+    <Login></Login>
   )
 
 }
