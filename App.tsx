@@ -3,8 +3,13 @@ import { StyleSheet, Text, View } from 'react-native';
 import logo from './strava-2.svg';
 import {vmin} from 'react-native-expo-viewport-units';
 import { hooks } from "tasit";
+import Account from "@tasit/account";
 const { useAccount } = hooks;
 import config from './app.config.js'
+import abi from './abi.json'
+import { ethers } from 'ethers';
+import { AsyncStorage } from 'react-native';
+
 
 var strava = require("strava-v3");
 var axios = require("axios");
@@ -13,58 +18,92 @@ var moment = require("moment");
 import * as Random from "expo-random";
 
 export default function App() {
-
-  const [randomBytes, setRandomBytes] = useState(new Uint8Array());
-
-  useEffect(() => {
-    let isMounted = true;
-    async function makeRandomBytes() {
-      const randomBytesThatWereGenerated = await Random.getRandomBytesAsync(16);
-      if (isMounted) {
-        console.log("randomBytes generated");
-        setRandomBytes(randomBytesThatWereGenerated);
-      }
-    }
-    makeRandomBytes();
-    return () => {
-      isMounted = false;
-    };
-  }, []); // Just run this once
-
-  const randomBytesGenerated = randomBytes.length !== 0;
-
-  const address = useAccount({
-    randomBytes,
-    randomBytesGenerated,
-  });
-
-
-  console.log({ address });
   
   return (
-    <Home address={address}></Home>
+    <Home></Home>
   )
 
 }
 
 
-class Home extends React.Component <{address: String}> {
+class Home extends React.Component {
   state = {
     accessToken: "",
     message: "Awaiting accesstoken",
-    address: ""
+    address: "",
+    account: undefined
   };
 
   async componentDidMount() {
-    console.log('props', this.props.address)
-    this.getAccesstoken();
+    // const contract = new Action.Contract('0x70DaF39b0e59e130275E0003b7B70668914b21e4', abi) as any;
+    // const action = contract.owner();
+    // action.send(); // broadcast
+    const accountString = await this._retrieveData('account')
+
+    if(!accountString) {
+      this.getAccount();
+    } else {
+      this.setAccount(accountString);
+    }
+
+    // this.testContract();
+
+    // this.getAccesstoken();
   }
 
-  // static getDerivedStateFromProps(nextProps, prevState) {
-  //   return {
-  //    address: nextProps.address,
-  //   };
-  //  }
+  async getAccount() {
+    async function makeAccount() {
+      const randomBytes = await Random.getRandomBytesAsync(16);
+  
+      const account = Account.createUsingRandomness(randomBytes);
+      const address = account.address;
+      return {address, account}
+    }
+    const {address, account} = await makeAccount();
+    this._storeData('account', JSON.stringify(account))
+
+    this.setState({address: address, account: account})
+    this.testContract()
+  }
+
+  setAccount(accountString: string) {
+    const account = JSON.parse(accountString)
+    console.log(account)
+    this.setState({address: account.signingKey.address, account: account})
+    this.testContract()
+  }
+
+  async testContract() {
+    new ethers.providers.InfuraProvider('ropsten',)
+    
+    let provider = ethers.getDefaultProvider('ropsten','f7Bb4CKYnN0MVFStLUwvq7zhTbG7KFmKpxqKwqzQ');
+    
+    // Create a wallet to sign the message with
+    let privateKey = this.state.account.signingKey.privateKey;
+    console.log(privateKey)
+    let wallet = new ethers.Wallet(privateKey);
+    
+    wallet = wallet.connect(provider);
+    // "0x14791697260E4c9A71f18484C9f997B308e59325"
+    
+    let contractAddress = '0x70DaF39b0e59e130275E0003b7B70668914b21e4';
+    let contract = new ethers.Contract(contractAddress, abi, provider);
+
+    let contractWithSigner = contract.connect(wallet);
+    
+    let message = "Hello World";
+    
+    // Sign the string message
+    let flatSig = await wallet.signMessage(message);
+    
+    // For Solidity, we need the expanded-format of a signature
+    let sig = ethers.utils.splitSignature(flatSig);
+    
+    // Call the verifyString function
+    let totalDistanceKmHex = await contractWithSigner.makeCommitment(1500000,1596679523000,1);
+    
+    // console.log((totalDistanceKmHex.toNumber()/ 100) * 0.000621371);
+  }
 
   // Use env credentials to call Strava API and get access token to API calls for user data
   // TODO replace refresh_token via call to DB
@@ -153,6 +192,29 @@ class Home extends React.Component <{address: String}> {
     }
   };
 
+  _storeData = async (key: string, value: string) => {
+    try {
+      await AsyncStorage.setItem(
+        key,
+        value
+      );
+    } catch (error) {
+      // Error saving data
+    }
+  };
+
+  _retrieveData = async (key: string) => {
+    try {
+      const value = await AsyncStorage.getItem(key);
+      if (value !== null) {
+        // We have data!!
+        return value;
+      }
+    } catch (error) {
+      // Error retrieving data
+    }
+  };
+
   render() {
     console.log("render")
     return (
@@ -160,8 +222,8 @@ class Home extends React.Component <{address: String}> {
         <View style={styles.AppHeader}>
           <img src={logo} style={{height: vmin(40)}} alt="logo" />
           <h1>Strava Client</h1>
-          <h2>{this.state.message}</h2>
-          <p>{this.props.address}</p>
+          {/* <h2>{this.state.message}</h2> */}
+          <p>{this.state.address}</p>
         </View>
       </View>
     );

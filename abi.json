@@ -1,0 +1,395 @@
+[
+	{
+		"constant": false,
+		"inputs": [
+			{
+				"name": "_requestId",
+				"type": "bytes32"
+			},
+			{
+				"name": "_payment",
+				"type": "uint256"
+			},
+			{
+				"name": "_callbackFunctionId",
+				"type": "bytes4"
+			},
+			{
+				"name": "_expiration",
+				"type": "uint256"
+			}
+		],
+		"name": "cancelRequest",
+		"outputs": [],
+		"payable": false,
+		"stateMutability": "nonpayable",
+		"type": "function"
+	},
+	{
+		"constant": false,
+		"inputs": [
+			{
+				"name": "_goal",
+				"type": "uint256"
+			},
+			{
+				"name": "_startTime",
+				"type": "uint256"
+			},
+			{
+				"name": "_stake",
+				"type": "uint256"
+			}
+		],
+		"name": "depositAndCommit",
+		"outputs": [
+			{
+				"name": "",
+				"type": "bool"
+			}
+		],
+		"payable": false,
+		"stateMutability": "nonpayable",
+		"type": "function"
+	},
+	{
+		"constant": false,
+		"inputs": [
+			{
+				"name": "_requestId",
+				"type": "bytes32"
+			},
+			{
+				"name": "_distance",
+				"type": "uint256"
+			}
+		],
+		"name": "fulfillActivityDistance",
+		"outputs": [],
+		"payable": false,
+		"stateMutability": "nonpayable",
+		"type": "function"
+	},
+	{
+		"constant": false,
+		"inputs": [
+			{
+				"name": "_goal",
+				"type": "uint256"
+			},
+			{
+				"name": "_startTime",
+				"type": "uint256"
+			},
+			{
+				"name": "_stake",
+				"type": "uint256"
+			}
+		],
+		"name": "makeCommitment",
+		"outputs": [
+			{
+				"name": "",
+				"type": "bool"
+			}
+		],
+		"payable": false,
+		"stateMutability": "nonpayable",
+		"type": "function"
+	},
+	{
+		"constant": false,
+		"inputs": [
+			{
+				"name": "committer",
+				"type": "address"
+			}
+		],
+		"name": "processCommitment",
+		"outputs": [],
+		"payable": false,
+		"stateMutability": "nonpayable",
+		"type": "function"
+	},
+	{
+		"constant": false,
+		"inputs": [],
+		"name": "renounceOwnership",
+		"outputs": [],
+		"payable": false,
+		"stateMutability": "nonpayable",
+		"type": "function"
+	},
+	{
+		"constant": false,
+		"inputs": [
+			{
+				"name": "_committer",
+				"type": "address"
+			},
+			{
+				"name": "_oracle",
+				"type": "address"
+			},
+			{
+				"name": "_jobId",
+				"type": "string"
+			}
+		],
+		"name": "requestActivityDistance",
+		"outputs": [],
+		"payable": false,
+		"stateMutability": "nonpayable",
+		"type": "function"
+	},
+	{
+		"constant": false,
+		"inputs": [
+			{
+				"name": "_newOwner",
+				"type": "address"
+			}
+		],
+		"name": "transferOwnership",
+		"outputs": [],
+		"payable": false,
+		"stateMutability": "nonpayable",
+		"type": "function"
+	},
+	{
+		"constant": false,
+		"inputs": [],
+		"name": "withdrawLink",
+		"outputs": [],
+		"payable": false,
+		"stateMutability": "nonpayable",
+		"type": "function"
+	},
+	{
+		"inputs": [],
+		"payable": false,
+		"stateMutability": "nonpayable",
+		"type": "constructor"
+	},
+	{
+		"anonymous": false,
+		"inputs": [
+			{
+				"indexed": false,
+				"name": "committer",
+				"type": "address"
+			},
+			{
+				"indexed": false,
+				"name": "startTime",
+				"type": "uint256"
+			},
+			{
+				"indexed": false,
+				"name": "endTime",
+				"type": "uint256"
+			},
+			{
+				"indexed": false,
+				"name": "goal",
+				"type": "uint256"
+			},
+			{
+				"indexed": false,
+				"name": "stake",
+				"type": "uint256"
+			}
+		],
+		"name": "NewCommitment",
+		"type": "event"
+	},
+	{
+		"anonymous": false,
+		"inputs": [
+			{
+				"indexed": false,
+				"name": "committer",
+				"type": "address"
+			},
+			{
+				"indexed": false,
+				"name": "met",
+				"type": "bool"
+			},
+			{
+				"indexed": false,
+				"name": "amountPenalized",
+				"type": "uint256"
+			}
+		],
+		"name": "CommitmentEnded",
+		"type": "event"
+	},
+	{
+		"anonymous": false,
+		"inputs": [
+			{
+				"indexed": true,
+				"name": "requestId",
+				"type": "bytes32"
+			},
+			{
+				"indexed": true,
+				"name": "distance",
+				"type": "uint256"
+			}
+		],
+		"name": "RequestActivityDistancFulfilled",
+		"type": "event"
+	},
+	{
+		"anonymous": false,
+		"inputs": [
+			{
+				"indexed": true,
+				"name": "previousOwner",
+				"type": "address"
+			}
+		],
+		"name": "OwnershipRenounced",
+		"type": "event"
+	},
+	{
+		"anonymous": false,
+		"inputs": [
+			{
+				"indexed": true,
+				"name": "previousOwner",
+				"type": "address"
+			},
+			{
+				"indexed": true,
+				"name": "newOwner",
+				"type": "address"
+			}
+		],
+		"name": "OwnershipTransferred",
+		"type": "event"
+	},
+	{
+		"anonymous": false,
+		"inputs": [
+			{
+				"indexed": true,
+				"name": "id",
+				"type": "bytes32"
+			}
+		],
+		"name": "ChainlinkRequested",
+		"type": "event"
+	},
+	{
+		"anonymous": false,
+		"inputs": [
+			{
+				"indexed": true,
+				"name": "id",
+				"type": "bytes32"
+			}
+		],
+		"name": "ChainlinkFulfilled",
+		"type": "event"
+	},
+	{
+		"anonymous": false,
+		"inputs": [
+			{
+				"indexed": true,
+				"name": "id",
+				"type": "bytes32"
+			}
+		],
+		"name": "ChainlinkCancelled",
+		"type": "event"
+	},
+	{
+		"constant": true,
+		"inputs": [
+			{
+				"name": "",
+				"type": "address"
+			}
+		],
+		"name": "commitments",
+		"outputs": [
+			{
+				"name": "committer",
+				"type": "address"
+			},
+			{
+				"name": "goalValue",
+				"type": "uint256"
+			},
+			{
+				"name": "start",
+				"type": "uint256"
+			},
+			{
+				"name": "end",
+				"type": "uint256"
+			},
+			{
+				"name": "stake",
+				"type": "uint256"
+			},
+			{
+				"name": "exists",
+				"type": "bool"
+			},
+			{
+				"name": "met",
+				"type": "bool"
+			}
+		],
+		"payable": false,
+		"stateMutability": "view",
+		"type": "function"
+	},
+	{
+		"constant": true,
+		"inputs": [],
+		"name": "distance",
+		"outputs": [
+			{
+				"name": "",
+				"type": "uint256"
+			}
+		],
+		"payable": false,
+		"stateMutability": "view",
+		"type": "function"
+	},
+	{
+		"constant": true,
+		"inputs": [],
+		"name": "getChainlinkToken",
+		"outputs": [
+			{
+				"name": "",
+				"type": "address"
+			}
+		],
+		"payable": false,
+		"stateMutability": "view",
+		"type": "function"
+	},
+	{
+		"constant": true,
+		"inputs": [],
+		"name": "owner",
+		"outputs": [
+			{
+				"name": "",
+				"type": "address"
+			}
+		],
+		"payable": false,
+		"stateMutability": "view",
+		"type": "function"
+	}
+]
