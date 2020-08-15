@@ -4,12 +4,13 @@ import Commit from './Commit'
 import Track from './Track'
 import MakeCommitment from './MakeCommitment'
 import Complete from './Complete'
+import Wallet from './Wallet'
 
 export default class Login extends Component <{account: any}, {step: Number, account: any}> {
   constructor(props) {
     super(props);
     this.state = {
-      step: 7,
+      step: 1,
       account: undefined
     };
   }
@@ -64,17 +65,21 @@ export default class Login extends Component <{account: any}, {step: Number, acc
           )
         case 4:
             return (
-                <Commit next={this.onClick}></Commit>
+                <Wallet next={this.onClick} account={this.props.account}></Wallet>
             )
         case 5:
             return (
-                <MakeCommitment next={this.onClick} account={this.props.account}></MakeCommitment>
+                <Commit next={this.onClick}></Commit>
             )
         case 6:
             return (
-                <Track next={this.onClick} account={this.props.account}></Track>
+                <MakeCommitment next={this.onClick} account={this.props.account}></MakeCommitment>
             )
         case 7:
+            return (
+                <Track next={this.onClick} account={this.props.account}></Track>
+            )
+        case 8:
             return (
                 <Complete next={this.onClick} account={this.props.account}></Complete>
             )

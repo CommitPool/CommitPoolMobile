@@ -17,7 +17,7 @@ export default class Track extends Component <{next: any, account: any}, {loadin
   componentDidMount() {
       setInterval(() => {
         this.setState({fill: 100})
-      }, 500)
+      }, 3000)
   }
 
   async getUpdatedActivity() {
@@ -41,7 +41,7 @@ export default class Track extends Component <{next: any, account: any}, {loadin
         console.log(this.props.account.signingKey.address)
         await contractWithSigner.requestActivityDistance(this.props.account.signingKey.address, '0x4E67b6154cAFD92fE90420a96f59cc5a2C61c8c7', '2a384addea684528859b38c79f930745', {gasLimit: 500000});
         this.setState({loading: false})
-        this.props.next(7)
+        this.props.next(8)
     } catch (error) {
         console.log(error)
         this.setState({loading: false})
