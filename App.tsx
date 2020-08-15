@@ -2,12 +2,16 @@ import React, { useState, useEffect }  from 'react';
 import { StyleSheet, Text, View } from 'react-native';
 import Account from "@tasit/account";
 import { ethers } from 'ethers';
+import { Dimensions } from 'react-native';
 import { AsyncStorage } from 'react-native';
 import Login from './SignIn'
+import {LinearGradient} from 'expo-linear-gradient'
 
 import * as Random from "expo-random";
 
 export default function App() {
+  
+  const { width } = Dimensions.get('window');
   
   return (
     <Home></Home>
@@ -78,10 +82,12 @@ class Home extends React.Component {
 
   render() {
     return (
-      <Login account={this.state.account}></Login>
+          <Login account={this.state.account}></Login>
     );
   }
 }
+
+const { width } = Dimensions.get('window');
 
 const styles = StyleSheet.create({
   container: {
@@ -89,8 +95,16 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
     textAlign: 'center',
-    backgroundColor: '#282c34',
+    //backgroundColor: '#282c34',
     color: 'whitesmoke',
+  },
+
+linearGradient: {
+    flex: 1,
+    alignItems: 'center',
+    justifyContent: 'center',
+    width,
+    borderRadius: 5
   },
 
   AppHeader: {

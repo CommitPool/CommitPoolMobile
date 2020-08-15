@@ -1,10 +1,12 @@
 import React, { Component } from "react";
-import { View, Image, Text, TouchableOpacity } from "react-native";
+import { View, Image, Text, TouchableOpacity, StyleSheet } from "react-native";
 import Commit from './Commit'
 import Track from './Track'
 import MakeCommitment from './MakeCommitment'
 import Complete from './Complete'
 import Wallet from './Wallet'
+import { Dimensions } from 'react-native';
+import {LinearGradient} from 'expo-linear-gradient'
 
 export default class Login extends Component <{account: any}, {step: Number, account: any}> {
   constructor(props) {
@@ -23,8 +25,13 @@ export default class Login extends Component <{account: any}, {step: Number, acc
     switch(this.state.step) {
         case 1:
           return (
-          <View style={{backgroundColor: '#D45353', flex: 1, alignItems: 'center', justifyContent: 'space-around'}}>
+          <View style={{flex: 1, alignItems: 'center', justifyContent: 'space-around'}}>
             <View style={{alignItems: 'center'}}>
+               <View style={styles.container}>
+        <LinearGradient
+          colors={['#D45353', '#D45353', 'white' ]}
+          style={styles.linearGradient}
+        >
                 <Image
                     style={{width: 200, height: 200}}
                     source={require('./assets/commit.png')}
@@ -32,6 +39,9 @@ export default class Login extends Component <{account: any}, {step: Number, acc
                 <Text style={{ color: 'white', fontSize: 50}}>
                     CommitPool
                 </Text>
+
+        </LinearGradient>
+      </View>
             </View>
             <TouchableOpacity onPress={() => this.onClick(2)}>
                 <Image
@@ -65,15 +75,30 @@ export default class Login extends Component <{account: any}, {step: Number, acc
           )
         case 4:
             return (
+ 		<LinearGradient
+          colors={['#D45353', '#D45353', 'white' ]}
+          style={styles.linearGradient}
+        >
                 <Wallet next={this.onClick} account={this.props.account}></Wallet>
+	</LinearGradient>
             )
         case 5:
             return (
+		<LinearGradient
+          		colors={['#D45353', '#D45353', 'white' ]}
+          		style={styles.linearGradient}
+        		>
                 <Commit next={this.onClick}></Commit>
+		</LinearGradient>
             )
         case 6:
             return (
+			<LinearGradient
+          		colors={['#D45353', '#D45353', 'white' ]}
+          		style={styles.linearGradient}
+        		>
                 <MakeCommitment next={this.onClick} account={this.props.account}></MakeCommitment>
+</LinearGradient>
             )
         case 7:
             return (
@@ -94,3 +119,17 @@ export default class Login extends Component <{account: any}, {step: Number, acc
     );
   }
 }
+
+const { width } = Dimensions.get('window');
+
+const styles = StyleSheet.create({
+
+linearGradient: {
+    flex: 1,
+    alignItems: 'center',
+    justifyContent: 'center',
+    width,
+    borderRadius: 5
+  }
+
+});
