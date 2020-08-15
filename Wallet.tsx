@@ -24,7 +24,7 @@ export default class Wallet extends Component <{next: any, account: any}, {balan
 
   render() {
     return (
-        <View style={{backgroundColor: '#D45353', flex: 1, alignItems: 'center', justifyContent: 'space-around'}}>
+        <View style={{flex: 1, alignItems: 'center', justifyContent: 'space-around'}}>
 
             <View style={{alignItems: 'center'}}>
                 <Text style={{fontSize: 50, color: 'white', marginBottom: 70}}>Add Funds</Text>
@@ -37,9 +37,9 @@ export default class Wallet extends Component <{next: any, account: any}, {balan
                 <Text style={{fontSize: 30, color: 'white', marginTop: 25}}>{this.state.daiBalance} Dai</Text>
             </View>
             <TouchableOpacity
-                    style={{width: 300, height: 50, backgroundColor: 'white', alignItems: 'center', justifyContent: 'center'}}
+                    style={{width: 300, height: 50, backgroundColor: '#D45353', alignItems: 'center', justifyContent: 'center'}}
                     onPress={() => this.props.next(5)}>
-                <Text style={{fontSize: 30}}>Get Started!</Text>
+                <Text style={{fontSize: 30, color: 'white'}}>Get Started!</Text>
             </TouchableOpacity>
         </View>
     );

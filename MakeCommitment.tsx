@@ -2,6 +2,7 @@ import React, { Component } from "react";
 import { View, StyleSheet, Image, Text, Button, TouchableOpacity, TextInput } from "react-native";
 import { ethers } from 'ethers';
 import abi from './abi.json'
+import { Dimensions } from 'react-native';
 
 export default class MakeCommitment extends Component <{next: any, account: any}, {txSent: Boolean, loading: Boolean, distance: Number, stake: Number}> {
   constructor(props) {
@@ -28,6 +29,8 @@ export default class MakeCommitment extends Component <{next: any, account: any}
     let contract = new ethers.Contract(contractAddress, abi, provider);
 
     let contractWithSigner = contract.connect(wallet);
+
+	const { width } = Dimensions.get('window');
     
     // Call the verifyString function
     const distanceInKm = Math.floor(this.state.distance / 0.000621371)
@@ -38,11 +41,14 @@ export default class MakeCommitment extends Component <{next: any, account: any}
   }
 
   render() {
+
+    const { width } = Dimensions.get('window');
+
     return (
-        <View style={{backgroundColor: '#D45353', flex: 1, alignItems: 'center', justifyContent: 'space-around'}}>
-            {this.state.loading ? <View style={{alignItems: 'center', justifyContent: 'center', position: 'absolute', right: 0, left: 0, top: 0, bottom: 0, backgroundColor: 'rgba(0,0,0,0.5)', zIndex: 2}}><Text style={{fontSize: 25}}>⌛</Text></View> : undefined}
+        <View style={{flex: 1, width, alignItems: 'center', justifyContent: 'space-around'}}>
+            {this.state.loading ? <View style={{flex: 1, alignItems: 'center', justifyContent: 'center', position: 'absolute', right: 0, left: 0, top: 0, bottom: 0, backgroundColor: 'rgba(0,0,0,0.5)', zIndex: 2}}><Text style={{fontSize: 25}}>⌛</Text></View> : undefined}
             {!this.state.txSent ? 
-            <View style={{backgroundColor: '#D45353', flex: 1, alignItems: 'center', justifyContent: 'space-around'}}>
+            <View style={{flex: 1, alignItems: 'center', justifyContent: 'space-around'}}>
                 <View style={{alignItems: 'center'}}>
                     <Text style={{fontSize: 50, color: 'white', marginBottom: 25, textAlign: 'center'}}>Create Commitment</Text>
                     <View style={{flexDirection: "row", width: 300, padding: 10}}>
@@ -68,9 +74,9 @@ export default class MakeCommitment extends Component <{next: any, account: any}
                 </View>
 
                 <TouchableOpacity
-                        style={{width: 300, height: 50, backgroundColor: 'white', alignItems: 'center', justifyContent: 'center'}}
+                        style={{width: 300, height: 50, backgroundColor: '#D45353', alignItems: 'center', justifyContent: 'center'}}
                         onPress={() => this.createCommitment()}>
-                    <Text style={{fontSize: 30}}>Stake and Commit</Text>
+                    <Text style={{fontSize: 30, color: 'white'}}>Stake and Commit</Text>
                 </TouchableOpacity>
             </View>
             :
@@ -99,9 +105,9 @@ export default class MakeCommitment extends Component <{next: any, account: any}
                 </View>
 
                 <TouchableOpacity
-                        style={{width: 300, height: 50, backgroundColor: 'white', alignItems: 'center', justifyContent: 'center'}}
+                        style={{width: 300, height: 50, backgroundColor: '#D45353', alignItems: 'center', justifyContent: 'center'}}
                         onPress={() => this.props.next(7)}>
-                    <Text style={{fontSize: 30}}>Track Progress</Text>
+                    <Text style={{fontSize: 30, color:'white'}}>Track Progress</Text>
                 </TouchableOpacity>
             </View>}
         </View>
