@@ -1,13 +1,16 @@
 import React, { Component } from "react";
 import { View, Image, Text, TouchableOpacity } from "react-native";
 import Commit from './Commit'
+import Track from './Track'
 import MakeCommitment from './MakeCommitment'
+import Complete from './Complete'
 
-export default class Login extends Component <{}, {step: Number}> {
+export default class Login extends Component <{account: any}, {step: Number, account: any}> {
   constructor(props) {
     super(props);
     this.state = {
-      step: 5
+      step: 7,
+      account: undefined
     };
   }
 
@@ -65,7 +68,15 @@ export default class Login extends Component <{}, {step: Number}> {
             )
         case 5:
             return (
-                <MakeCommitment next={this.onClick}></MakeCommitment>
+                <MakeCommitment next={this.onClick} account={this.props.account}></MakeCommitment>
+            )
+        case 6:
+            return (
+                <Track next={this.onClick} account={this.props.account}></Track>
+            )
+        case 7:
+            return (
+                <Complete next={this.onClick} account={this.props.account}></Complete>
             )
       }
   }
