@@ -45,25 +45,25 @@ export default class MakeCommitment extends Component <{next: any, account: any}
             <View style={{backgroundColor: '#D45353', flex: 1, alignItems: 'center', justifyContent: 'space-around'}}>
                 <View style={{alignItems: 'center'}}>
                     <Text style={{fontSize: 50, color: 'white', marginBottom: 25, textAlign: 'center'}}>Create Commitment</Text>
-                    <View style={{flexDirection: "row", width: 215, padding: 10}}>
-                        <Text style={{flex: 1, color: 'white', fontSize: 22}}>Activity:</Text>
-                        <Text style={{flex: 1, color: 'white', fontSize: 22}}>Run 🏃‍♂️</Text>
+                    <View style={{flexDirection: "row", width: 300, padding: 10}}>
+                        <Text style={{flex: 1, color: 'white', fontSize: 28, fontWeight: 'bold'}}>Activity:</Text>
+                        <Text style={{flex: 1, color: 'white', fontSize: 28, marginLeft: 10}}>Run 🏃‍♂️</Text>
                     </View>
-                    <View style={{flexDirection: "row", width: 215, padding: 10}}>
-                        <Text style={{flex: 1, color: 'white', fontSize: 22}}>Distance:</Text>
-                        <View style={{flex: 1, flexDirection: 'row'}}>
-                            <TextInput style={{backgroundColor: 'white', fontSize: 22, color: 'black', width: 30 + '%'}} onChangeText={text => this.setState({distance: Number(text)})}></TextInput><Text style={{flex: 1, color: 'white', fontSize: 22}}> mi.</Text>
+                    <View style={{flexDirection: "row", width: 300, padding: 10}}>
+                        <Text style={{flex: 1, color: 'white', fontSize: 28, fontWeight: 'bold'}}>Distance:</Text>
+                        <View style={{flex: 1, flexDirection: 'row', marginLeft: 10}}>
+                            <TextInput style={{textAlign:'center', borderRadius: 5, backgroundColor: 'white', fontSize: 28, color: 'black', width: 30 + '%'}} onChangeText={text => this.setState({distance: Number(text)})}></TextInput><Text style={{flex: 1, color: 'white', fontSize: 28}}> Miles</Text>
                         </View>                    
                     </View>
-                    <View style={{flexDirection: "row", width: 215, padding: 10}}>
-                        <Text style={{flex: 1, color: 'white', fontSize: 22}}>Stake:</Text>
-                        <View style={{flex: 1, flexDirection: 'row'}}>
-                            <TextInput style={{backgroundColor: 'white', fontSize: 22, color: 'black', width: 30 + '%'}} onChangeText={text => this.setState({stake: Number(text)})}></TextInput><Text style={{flex: 1, color: 'white', fontSize: 22}}> DAI</Text>
+                    <View style={{flexDirection: "row", width: 300, padding: 10}}>
+                        <Text style={{flex: 1, color: 'white', fontSize: 28, fontWeight: 'bold'}}>Stake:</Text>
+                        <View style={{flex: 1, flexDirection: 'row', marginLeft: 10}}>
+                            <TextInput style={{textAlign:'center', borderRadius: 5, backgroundColor: 'white', fontSize: 28, color: 'black', width: 30 + '%'}} onChangeText={text => this.setState({stake: Number(text)})}></TextInput><Text style={{flex: 1, color: 'white', fontSize: 28}}> Dai</Text>
                         </View>
                     </View>
-                    <View style={{flexDirection: "row", width: 215, padding: 10}}>
-                        <Text style={{flex: 1, color: 'white', fontSize: 22}}>Deadline:</Text>
-                        <Text style={{flex: 1, color: 'white', fontSize: 22}}>7 Days</Text>
+                    <View style={{flexDirection: "row", width: 300, padding: 10}}>
+                        <Text style={{flex: 1, color: 'white', fontSize: 28, fontWeight: 'bold'}}>Deadline:</Text>
+                        <Text style={{flex: 1, color: 'white', fontSize: 28, marginLeft: 10}}>7 Days</Text>
                     </View>
                 </View>
 
@@ -77,25 +77,23 @@ export default class MakeCommitment extends Component <{next: any, account: any}
             <View style={{backgroundColor: '#D45353', flex: 1, alignItems: 'center', justifyContent: 'space-around'}}>
                 {this.state.loading ? <View style={{alignItems: 'center', justifyContent: 'center', position: 'absolute', right: 0, left: 0, top: 0, bottom: 0, backgroundColor: 'rgba(0,0,0,0.5)', zIndex: 2}}><Text style={{fontSize: 25}}>⌛</Text></View> : undefined}
                 <View style={{alignItems: 'center'}}>
-                    <Text style={{fontSize: 50, color: 'white', marginBottom: 25, textAlign: 'center'}}>Commitment Created</Text>
-                    <Text style={{fontSize: 50, marginBottom: 25}}>✔️</Text>
-                    <View style={{flexDirection: "row", width: 215, padding: 10}}>
-                        <Text style={{flex: 1, color: 'white', fontSize: 22}}>Activity:</Text>
-                        <Text style={{flex: 1, color: 'white', fontSize: 22}}>Run 🏃‍♂️</Text>
+                    <Text style={{fontSize: 50, color: 'white', marginBottom: 25, textAlign: 'center'}}>Create Commitment</Text>
+                    <View style={{flexDirection: "row", width: 300, padding: 10}}>
+                        <Text style={{flex: 1, color: 'white', fontSize: 28, fontWeight: 'bold'}}>Activity:</Text>
+                        <Text style={{flex: 1, color: 'white', fontSize: 28, marginLeft: 10}}>Run 🏃‍♂️</Text>
                     </View>
-                    <View style={{flexDirection: "row", width: 215, padding: 10}}>
-                        <Text style={{flex: 1, color: 'white', fontSize: 22}}>Distance:</Text>
-                        <Text style={{flex: 1, color: 'white', fontSize: 22}}>10 Miles</Text>
+                    <View style={{flexDirection: "row", width: 300, padding: 10}}>
+                        <Text style={{flex: 1, color: 'white', fontSize: 28, fontWeight: 'bold'}}>Distance:</Text>
+                        <Text style={{flex: 1, color: 'white', fontSize: 28, marginLeft: 10}}>5 Miles</Text>                 
                     </View>
-                    <View style={{flexDirection: "row", width: 215, padding: 10}}>
-                        <Text style={{flex: 1, color: 'white', fontSize: 22}}>Stake:</Text>
-                        <Text style={{flex: 1, color: 'white', fontSize: 22}}>10 Dai</Text>
+                    <View style={{flexDirection: "row", width: 300, padding: 10}}>
+                        <Text style={{flex: 1, color: 'white', fontSize: 28, fontWeight: 'bold'}}>Stake:</Text>
+                        <Text style={{flex: 1, color: 'white', fontSize: 28, marginLeft: 10}}>5 Dai</Text>
                     </View>
-                    <View style={{flexDirection: "row", width: 215, padding: 10}}>
-                        <Text style={{flex: 1, color: 'white', fontSize: 22}}>Deadline:</Text>
-                        <Text style={{flex: 1, color: 'white', fontSize: 22}}>7 Days</Text>
+                    <View style={{flexDirection: "row", width: 300, padding: 10}}>
+                        <Text style={{flex: 1, color: 'white', fontSize: 28, fontWeight: 'bold'}}>Deadline:</Text>
+                        <Text style={{flex: 1, color: 'white', fontSize: 28, marginLeft: 10}}>7 Days</Text>
                     </View>
-                    <Text style={{color: 'white', fontSize: 22, marginTop: 25}}>Etherscan <Image style={{width: 10, height: 10}} source={require('./assets/arrow-popout.svg')}></Image></Text>
                 </View>
 
                 <TouchableOpacity

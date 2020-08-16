@@ -4,13 +4,14 @@ import { AnimatedCircularProgress } from 'react-native-circular-progress';
 import { ethers } from 'ethers';
 import abi from './abi.json'
 
-export default class Track extends Component <{next: any, account: any}, {loading: Boolean, step: Number, fill: number}> {
+export default class Track extends Component <{next: any, account: any}, {loading: Boolean, step: Number, fill: number, goal: number}> {
   constructor(props) {
     super(props);
     this.state = {
       step: 1,
       fill: 60,
-      loading: false
+      loading: false,
+      goal: 5
     };
   }
 
@@ -70,7 +71,7 @@ export default class Track extends Component <{next: any, account: any}, {loadin
                         )
                     }
                 </AnimatedCircularProgress>
-                <Text style={{fontSize: 22, color: 'white', marginTop: 25}}>{this.state.fill/10}/10 Miles</Text>
+                <Text style={{fontSize: 22, color: 'white', marginTop: 25}}>{(this.state.fill/100) * this.state.goal} Miles</Text>
             </View>
             <TouchableOpacity
                     style={this.state.fill !== 100 ? {width: 300, height: 50, backgroundColor: '#999', alignItems: 'center', justifyContent: 'center'}
