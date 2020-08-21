@@ -77,7 +77,8 @@ export default class MakeCommitment extends Component <{next: any, account: any}
             <View style={{backgroundColor: '#D45353', flex: 1, alignItems: 'center', justifyContent: 'space-around'}}>
                 {this.state.loading ? <View style={{alignItems: 'center', justifyContent: 'center', position: 'absolute', right: 0, left: 0, top: 0, bottom: 0, backgroundColor: 'rgba(0,0,0,0.5)', zIndex: 2}}><Text style={{fontSize: 25}}>⌛</Text></View> : undefined}
                 <View style={{alignItems: 'center'}}>
-                    <Text style={{fontSize: 50, color: 'white', marginBottom: 25, textAlign: 'center'}}>Create Commitment</Text>
+                    <Text style={{fontSize: 50, color: 'white', marginBottom: 25, textAlign: 'center'}}>Commitment Created</Text>
+                    <Text style={{fontSize: 50, marginBottom: 25}}>✔️</Text>
                     <View style={{flexDirection: "row", width: 300, padding: 10}}>
                         <Text style={{flex: 1, color: 'white', fontSize: 28, fontWeight: 'bold'}}>Activity:</Text>
                         <Text style={{flex: 1, color: 'white', fontSize: 28, marginLeft: 10}}>Run 🏃‍♂️</Text>
@@ -94,6 +95,7 @@ export default class MakeCommitment extends Component <{next: any, account: any}
                         <Text style={{flex: 1, color: 'white', fontSize: 28, fontWeight: 'bold'}}>Deadline:</Text>
                         <Text style={{flex: 1, color: 'white', fontSize: 28, marginLeft: 10}}>7 Days</Text>
                     </View>
+                    <Text style={{color: 'white', fontSize: 30, marginTop: 25}}>View on Etherscan <Image style={{width: 20, height: 20}} source={require('./assets/arrow-popout.svg')}></Image></Text>
                 </View>
 
                 <TouchableOpacity

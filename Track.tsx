@@ -71,7 +71,7 @@ export default class Track extends Component <{next: any, account: any}, {loadin
                         )
                     }
                 </AnimatedCircularProgress>
-                <Text style={{fontSize: 22, color: 'white', marginTop: 25}}>{(this.state.fill/100) * this.state.goal} Miles</Text>
+                <Text style={{fontSize: 22, color: 'white', marginTop: 25}}>{(this.state.fill/100) * this.state.goal}/{this.state.goal} Miles</Text>
             </View>
             <TouchableOpacity
                     style={this.state.fill !== 100 ? {width: 300, height: 50, backgroundColor: '#999', alignItems: 'center', justifyContent: 'center'}
