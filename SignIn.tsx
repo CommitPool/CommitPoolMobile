@@ -25,31 +25,28 @@ export default class Login extends Component <{account: any}, {step: Number, acc
     switch(this.state.step) {
         case 1:
           return (
-          <View style={{flex: 1, alignItems: 'center', justifyContent: 'space-around'}}>
-            <View style={{alignItems: 'center'}}>
-               <View style={styles.container}>
-        <LinearGradient
-          colors={['#D45353', '#D45353', 'white' ]}
-          style={styles.linearGradient}
-        >
-                <Image
-                    style={{width: 200, height: 200}}
-                    source={require('./assets/commit.png')}
-                />
-                <Text style={{ color: 'white', fontSize: 50}}>
-                    CommitPool
-                </Text>
-
-        </LinearGradient>
-      </View>
+            <LinearGradient
+            colors={['#D45353', '#D45353', 'white' ]}
+            style={styles.linearGradient}
+            >
+            <View style={{flex: 1, alignItems: 'center', justifyContent: 'space-around'}}>
+                <View style={{alignItems: 'center'}}>
+                    <Image
+                        style={{width: 200, height: 200}}
+                        source={require('./assets/commit.png')}
+                    />
+                    <Text style={{ color: 'white', fontSize: 50}}>
+                        CommitPool
+                    </Text>
+                </View>
+                <TouchableOpacity onPress={() => this.onClick(2)}>
+                    <Image
+                        style={{width: 300, height: 50}}
+                        source={require('./assets/strava.svg')}
+                    />
+                </TouchableOpacity>
             </View>
-            <TouchableOpacity onPress={() => this.onClick(2)}>
-                <Image
-                    style={{width: 300, height: 50}}
-                    source={require('./assets/strava.svg')}
-                />
-            </TouchableOpacity>
-        </View>)
+        </LinearGradient>)
         case 2:
           return (
             <View style={{width: 100 + '%', height: 100 + '%'}}>
@@ -120,7 +117,7 @@ export default class Login extends Component <{account: any}, {step: Number, acc
   }
 }
 
-const { width } = Dimensions.get('window');
+const { width, height } = Dimensions.get('window');
 
 const styles = StyleSheet.create({
 
@@ -129,6 +126,7 @@ linearGradient: {
     alignItems: 'center',
     justifyContent: 'center',
     width,
+    height,
     borderRadius: 5
   }
 
