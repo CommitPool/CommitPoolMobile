@@ -1,5 +1,5 @@
 import React, { Component } from "react";
-import { View, StyleSheet, Image, Text, Button, TouchableOpacity } from "react-native";
+import { View, StyleSheet, Image, Text, Button, TouchableOpacity, Clipboard } from "react-native";
 import ConfettiCannon from 'react-native-confetti-cannon';
 import QRCode from 'react-native-qrcode-svg';
 
@@ -32,6 +32,7 @@ export default class Wallet extends Component <{next: any, account: any}, {balan
                     value="this.props.account.signingKey.address"
                     size={225}
                 />
+                <Text onPress={()=>Clipboard.setString(this.props.account.signingKey.address)} style={{fontSize: 14, color: 'white', marginTop: 10}}>{this.props.account.signingKey.address}</Text>
                 <Text style={{fontSize: 30, color: 'white', marginTop: 25, fontWeight: 'bold'}}>Balances:</Text>
                 <Text style={{fontSize: 30, color: 'white', marginTop: 25}}>{this.state.balance} ETH</Text>
                 <Text style={{fontSize: 30, color: 'white', marginTop: 25}}>{this.state.daiBalance} Dai</Text>
