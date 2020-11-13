@@ -43,7 +43,7 @@ export default class Wallet extends Component <{next: any, account: any}, {balan
     let commitPoolContractAddress = '0x425da152ee61a31dfc9daed2e3940c0525ce678f';
     let commitPoolContract = new ethers.Contract(commitPoolContractAddress, abi, provider);
     const commitment = await commitPoolContract.commitments(this.props.account.signingKey.address)
-    if(commitment.start){
+    if(commitment.exists){
       this.props.next(7)
     } else {
       this.props.next(5)
