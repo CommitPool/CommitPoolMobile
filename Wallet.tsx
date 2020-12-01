@@ -56,7 +56,7 @@ export default class Wallet extends Component <{next: any, account: any}, {balan
     setInterval(async () => {
       const daiBalance = Number(await web3.eth.getBalance(contract.options.address));
       const balance = Number(await web3.eth.getBalance(accounts[0]));
-      this.setState({balance: balance / 1000})
+      this.setState({balance: balance /1000})
       this.setState({daiBalance: daiBalance / 1000})
     }, 2500)
   }
