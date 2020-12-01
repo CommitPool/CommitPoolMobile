@@ -2,10 +2,11 @@ import React, { Component } from "react";
 import { View, StyleSheet, Image, Text, Button, TouchableOpacity, Clipboard } from "react-native";
 import ConfettiCannon from 'react-native-confetti-cannon';
 import QRCode from 'react-native-qrcode-svg';
-import { ethers } from 'ethers';
-import daiAbi from './daiAbi.json'
-import abi from './abi2.json'
-
+import { BigNumber, ethers } from 'ethers';
+// import daiAbi from './daiAbi.json';
+import abi from './abi2.json';
+import Web3 from "web3";
+import Web3Modal from "web3modal";
 
 export default class Wallet extends Component <{next: any, account: any}, {balance: number, daiBalance: number, commitment: any}> {
   constructor(props) {
@@ -18,31 +19,73 @@ export default class Wallet extends Component <{next: any, account: any}, {balan
   }
 
   async componentDidMount() {
-    let provider =  new ethers.providers.InfuraProvider('ropsten','bec77b2c1b174308bcaa3e622828448f');
-    
-    let privateKey = this.props.account.signingKey.privateKey;
-    let wallet = new ethers.Wallet(privateKey);
-    wallet = wallet.connect(provider);
+    // let provider =  new ethers.providers.InfuraProvider('ropsten','bec77b2c1b174308bcaa3e622828448f');    
+    const providerOptions = {
+      injected: {
+        display: {
+          name: "Injected",
+          description: "Connect with the provider in your Browser"
+        },
+        package: null
+      }
+    };
+
+    const web3Modal = new Web3Modal({
+      network: "ropsten", // optional
+      cacheProvider: true, // optional
+      providerOptions: providerOptions // required
+    });
+
+    const provider = await web3Modal.connect();
+    const web3 = new Web3(provider);  
+
+    // let privateKey = this.props.account.signingKey.privateKey;
+    // let wallet = new ethers.Wallet(privateKey);
+    // wallet = wallet.connect(provider);
+    const accounts = await web3.eth.getAccounts();
     let contractAddress = '0xc2118d4d90b274016cb7a54c03ef52e6c537d957';
-    let contract = new ethers.Contract(contractAddress, daiAbi, provider);
-    const daiBalance = await contract.balanceOf(this.props.account.signingKey.address)
-    const balance = await wallet.getBalance();
-    this.setState({balance: balance.div(1000000000000000).toNumber() / 1000})
-    this.setState({daiBalance: daiBalance.div(1000000000000000).toNumber() / 1000})
+
+    const daiAbi = require('./daiAbi.json')
+    const contract = new web3.eth.Contract(daiAbi, contractAddress, provider);
+    // const daiBalance = await contract.methods.balanceOf(this.props.account.signingKey.address).then(console.log);
+    const daiBalance = Number(await web3.eth.getBalance(contract.options.address));
+    const balance = Number(await web3.eth.getBalance(accounts[0]));
+    this.setState({balance: balance / 1000})
+    this.setState({daiBalance: daiBalance / 1000})
 
     setInterval(async () => {
-      const daiBalance = await contract.balanceOf(this.props.account.signingKey.address)
-      const balance = await wallet.getBalance();
-      this.setState({balance: balance.div(1000000000000000).toNumber() / 1000})
-      this.setState({daiBalance: daiBalance.div(1000000000000000).toNumber() / 1000})
+      const daiBalance = Number(await web3.eth.getBalance(contract.options.address));
+      const balance = Number(await web3.eth.getBalance(accounts[0]));
+      this.setState({balance: balance / 1000})
+      this.setState({daiBalance: daiBalance / 1000})
     }, 2500)
   }
 
   async next() {
-    let provider =  new ethers.providers.InfuraProvider('ropsten','bec77b2c1b174308bcaa3e622828448f');
+    const providerOptions = {
+      injected: {
+        display: {
+          name: "Injected",
+          description: "Connect with the provider in your Browser"
+        },
+        package: null
+      }
+    };
+
+    const web3Modal = new Web3Modal({
+      network: "ropsten", // optional
+      cacheProvider: true, // optional
+      providerOptions: providerOptions // required
+    });
+    
+    let provider =  await web3Modal.connect();
+    const web3 = new Web3(provider);  
+
     let commitPoolContractAddress = '0x425da152ee61a31dfc9daed2e3940c0525ce678f';
-    let commitPoolContract = new ethers.Contract(commitPoolContractAddress, abi, provider);
-    const commitment = await commitPoolContract.commitments(this.props.account.signingKey.address)
+
+    const abi = require('./abi2.json')
+    let commitPoolContract = new web3.eth.Contract(abi, commitPoolContractAddress, provider);
+    const commitment = await commitPoolContract.methods.commitments(this.props.account.signingKey.address)
     if(commitment.exists){
       this.props.next(7)
     } else {
