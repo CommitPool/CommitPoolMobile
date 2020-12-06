@@ -1,60 +1,112 @@
 import React, { Component } from "react";
 import { View, StyleSheet, Image, Text, Button, TouchableOpacity, TextInput } from "react-native";
-import { ethers } from 'ethers';
-import abi from './abi2.json'
+import { ethers, utils } from 'ethers';
+import abi from './abi.json'
+import daiAbi from './daiAbi.json'
 import { Dimensions } from 'react-native';
 import DropDownPicker from 'react-native-dropdown-picker';
 
-export default class MakeCommitment extends Component <{next: any, account: any, code: any}, {txSent: Boolean, loading: Boolean, distance: Number, stake: Number, activity: any}> {
+export default class MakeCommitment extends Component <{next: any, account: any, code: any}, {txSent: Boolean, loading: Boolean, distance: Number, stake: Number, activity: {}, activities: any}> {
+  contract: any;
+  daiContract: any;
   constructor(props) {
     super(props);
+    
     this.state = {
       distance: 0,
       stake: 0,
       loading: false,
       txSent: false,
-      activity: {
-        label: 'Run 🏃‍♂️',
-        value: 'Run'
-      }
+      activity: {},
+      activities: []
     };
   }
 
-  async createCommitment() {
-    
-    let provider =  new ethers.providers.InfuraProvider('ropsten','bec77b2c1b174308bcaa3e622828448f')
+  async componentDidMount() {
+    const url = 'https://rpc-mumbai.maticvigil.com/v1/e121feda27b4c1387cd0bf9a441e8727f8e86f56'
 
+    const provider = new ethers.providers.JsonRpcProvider(url);
     
     let privateKey = this.props.account.signingKey.privateKey;
     let wallet = new ethers.Wallet(privateKey);
     
     wallet = wallet.connect(provider);
     
-    let contractAddress = '0x425da152ee61a31dfc9daed2e3940c0525ce678f';
+    let contractAddress = '0x251B6f95F6A17D2aa350456f616a84b733380eBE';
     let contract = new ethers.Contract(contractAddress, abi, provider);
 
-    let contractWithSigner = contract.connect(wallet);
-
-	const { width } = Dimensions.get('window');
+    let daiAddress = '0x70d1f773a9f81c852087b77f6ae6d3032b02d2ab';
+    let daiContract = new ethers.Contract(daiAddress, daiAbi, provider);
     
-    const distanceInKm = Math.floor(this.state.distance)
-    const twoDays = new Date().getTime() - (86400 * 1000 * 2)
+    this.contract = contract.connect(wallet);
+    this.daiContract = daiContract.connect(wallet);
+
+
+    let activities = [];
+    let exists = true;
+    let index = 0;
+
+    while (exists){
+      try {
+        const key = await this.contract.activityKeyList(index);
+        const activity = await this.contract.activities(key);
+        const clone = Object.assign({}, activity)
+        clone.key = key;
+        activities.push(clone);
+        index++;
+      } catch (error) {
+        console.log(error)
+        exists = false;
+      }
+    }
+
+    const formattedActivities = activities.map(act => {
+      if(act[0] === 'Run') {
+        return {
+          label: 'Run 🏃‍♂️',
+          value: act.key
+        }
+      } else if (act[0] === 'Ride') {
+        return {
+          label: 'Ride 🚲',
+          value: act.key
+        }
+      } else {
+        return {
+          label: act[0],
+          value: act.key
+        }
+      }
+    })
+
+    this.setState({activities: formattedActivities, activity: formattedActivities[0]})
+  }
+
+  async createCommitment() {    
+    const distanceInMiles = Math.floor(this.state.distance);
+    const startTime = Math.ceil(new Date().getTime() / 1000) + 60;
+    const stakeAmount = utils.parseEther(this.state.stake.toString());
     this.setState({loading: true})
-    await contractWithSigner.makeCommitment(this.state.activity, String(this.props.code.athlete.id), distanceInKm * 100, twoDays, this.state.stake);
+    
+    const allowance = await this.daiContract.allowance(this.props.account.signingKey.address, '0x251B6f95F6A17D2aa350456f616a84b733380eBE');
+    if(allowance.gte(stakeAmount)) {
+      await this.contract.depositAndCommit(this.state.activity, distanceInMiles * 100, startTime, stakeAmount, stakeAmount, String(this.props.code.athlete.id), {gasLimit: 5000000});
+    } else {
+      await this.daiContract.approve('0x251B6f95F6A17D2aa350456f616a84b733380eBE', stakeAmount)
+      await this.contract.depositAndCommit(this.state.activity, distanceInMiles * 100, startTime, stakeAmount, stakeAmount, String(this.props.code.athlete.id), {gasLimit: 5000000});
+    }
+
     this.setState({loading: false, txSent: true})
+  }
+
+
+  getActivityName() {
+    return this.state.activities.find((act: any) => act.value === this.state.activity).label;
   }
 
   render() {
 
     const { width } = Dimensions.get('window');
-
-    const data = [{
-        label: 'Run 🏃‍♂️',
-        value: 'Run'
-      }, {
-        label: 'Bike 🚲',
-        value: 'Bike'
-      }];
 
     return (
         <View style={{flex: 1, width, alignItems: 'center', justifyContent: 'space-around'}}>
@@ -66,7 +118,7 @@ export default class MakeCommitment extends Component <{next: any, account: any,
                     <View style={{flexDirection: "row", width: 300, padding: 10, zIndex: 5000}}>
                         <Text style={{flex: 1, color: 'white', fontSize: 28, fontWeight: 'bold'}}>Activity:</Text>
                         <DropDownPicker
-                            items={data}
+                            items={this.state.activities}
                             containerStyle={{height: 40}}
                             style={{backgroundColor: '#fafafa', width: 135}}
                             itemStyle={{
@@ -111,7 +163,7 @@ export default class MakeCommitment extends Component <{next: any, account: any,
                     <Text style={{fontSize: 50, marginBottom: 25}}>✔️</Text>
                     <View style={{flexDirection: "row", width: 300, padding: 10}}>
                         <Text style={{flex: 1, color: 'white', fontSize: 28, fontWeight: 'bold'}}>Activity:</Text>
-                        <Text style={{flex: 1, color: 'white', fontSize: 28, marginLeft: 10}}>{this.state.activity}</Text>
+                        <Text style={{flex: 1, color: 'white', fontSize: 28, marginLeft: 10}}>{this.getActivityName()}</Text>
                     </View>
                     <View style={{flexDirection: "row", width: 300, padding: 10}}>
                         <Text style={{flex: 1, color: 'white', fontSize: 28, fontWeight: 'bold'}}>Distance:</Text>

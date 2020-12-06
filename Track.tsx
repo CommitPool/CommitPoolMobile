@@ -3,7 +3,8 @@ import { View, StyleSheet, Image, Text, Button, TouchableOpacity } from "react-n
 import { AnimatedCircularProgress } from 'react-native-circular-progress';
 import { ethers } from 'ethers';
 import { AsyncStorage } from 'react-native';
-import abi from './abi2.json'
+import { Moment } from 'moment';
+import abi from './abi.json'
 
 export default class Track extends Component <{next: any, account: any, code: string}, {refreshToken: string, type: string, account:any, total: number, startTime: Number, endTime: Number, loading: Boolean, step: Number, fill: number, goal: number, accessToken: String}> {
   constructor(props) {
@@ -68,24 +69,26 @@ export default class Track extends Component <{next: any, account: any, code: st
   }
 
   async getCommitment() {    
-    let provider =  new ethers.providers.InfuraProvider('ropsten','bec77b2c1b174308bcaa3e622828448f')
-    
+    const url = 'https://rpc-mumbai.maticvigil.com/v1/e121feda27b4c1387cd0bf9a441e8727f8e86f56'
+
+    const provider = new ethers.providers.JsonRpcProvider(url);    
     let privateKey = this.state.account.signingKey.privateKey;
     let wallet = new ethers.Wallet(privateKey);
     
     wallet = wallet.connect(provider);
     
-    let contractAddress = '0x425da152ee61a31dfc9daed2e3940c0525ce678f';
+    let contractAddress = '0x251B6f95F6A17D2aa350456f616a84b733380eBE';
     let contract = new ethers.Contract(contractAddress, abi, provider);
 
     const commitment = await contract.commitments(this.state.account.signingKey.address)
+    console.log(commitment)
 
-
+    const type = await contract.activities(commitment['activityKey'])
     this.setState({
       goal: commitment['goalValue'].toNumber() / 100,
-      startTime: commitment['start'].toNumber(),
-      endTime: commitment['end'].toNumber(),
-      type: commitment['activityType']
+      startTime: commitment['startTime'].toNumber(),
+      endTime: commitment['endTime'].toNumber(),
+      type: type[0]
     })
 
     this.getActivity();
@@ -111,7 +114,9 @@ export default class Track extends Component <{next: any, account: any, code: st
 
   async getUpdatedActivity() {
     
-    let provider = new ethers.providers.InfuraProvider('ropsten','bec77b2c1b174308bcaa3e622828448f')
+    const url = 'https://rpc-mumbai.maticvigil.com/v1/e121feda27b4c1387cd0bf9a441e8727f8e86f56'
+
+    const provider = new ethers.providers.JsonRpcProvider(url);
     
     let privateKey = this.props.account.signingKey.privateKey;
     let wallet = new ethers.Wallet(privateKey);
@@ -119,7 +124,7 @@ export default class Track extends Component <{next: any, account: any, code: st
     wallet = wallet.connect(provider);
 
     
-    let contractAddress = '0x425da152ee61a31dfc9daed2e3940c0525ce678f';
+    let contractAddress = '0x251B6f95F6A17D2aa350456f616a84b733380eBE';
     let contract = new ethers.Contract(contractAddress, abi, provider);
 
     let contractWithSigner = contract.connect(wallet);
@@ -127,7 +132,7 @@ export default class Track extends Component <{next: any, account: any, code: st
     this.setState({loading: true})
     try {
         console.log(this.props.account.signingKey.address)
-        await contractWithSigner.requestActivityDistance(this.props.account.signingKey.address, '0x4E67b6154cAFD92fE90420a96f59cc5a2C61c8c7', 'b3ce0bb6410d469aae43855fc052ec04', {gasLimit: 500000});
+        await contractWithSigner.requestActivityDistance(this.props.account.signingKey.address, '0x1cf7D49BE7e0c6AC30dEd720623490B64F572E17', 'd8fcf41ee8984d3b8b0eae7b74eca7dd', {gasLimit: 500000});
         this.setState({loading: false})
         this.props.next(8)
     } catch (error) {
@@ -164,7 +169,7 @@ export default class Track extends Component <{next: any, account: any, code: st
                     style={this.state.fill !== 100 ? {width: 300, height: 50, backgroundColor: '#999', alignItems: 'center', justifyContent: 'center'}
                         : {width: 300, height: 50, backgroundColor: 'white', alignItems: 'center', justifyContent: 'center'}}
                     onPress={() => this.getUpdatedActivity()}
-                    disabled={this.state.fill < 100}>
+                    >
                 <Text style={{fontSize: 30}}>Claim Reward</Text>
             </TouchableOpacity>
         </View>
