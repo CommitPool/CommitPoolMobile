@@ -40,7 +40,7 @@ export default class Wallet extends Component <{next: any, account: any}, {balan
 
   async next() {
     let provider =  new ethers.providers.InfuraProvider('ropsten','bec77b2c1b174308bcaa3e622828448f');
-    let commitPoolContractAddress = '0x425da152ee61a31dfc9daed2e3940c0525ce678f';
+    let commitPoolContractAddress = '0x2f7544ef10f61b6950291fbE417416268945c0dc';
     let commitPoolContract = new ethers.Contract(commitPoolContractAddress, abi, provider);
     const commitment = await commitPoolContract.commitments(this.props.account.signingKey.address)
     if(commitment.exists){

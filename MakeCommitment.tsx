@@ -1,27 +1,25 @@
 import React, { Component } from "react";
 import { View, StyleSheet, Image, Text, Button, TouchableOpacity, TextInput } from "react-native";
 import { ethers } from 'ethers';
-import abi from './abi2.json'
+import abi from './abi.json'
 import { Dimensions } from 'react-native';
 import DropDownPicker from 'react-native-dropdown-picker';
 
-export default class MakeCommitment extends Component <{next: any, account: any, code: any}, {txSent: Boolean, loading: Boolean, distance: Number, stake: Number, activity: any}> {
+export default class MakeCommitment extends Component <{next: any, account: any, code: any}, {txSent: Boolean, loading: Boolean, distance: Number, stake: Number, activities: any}> {
+  contract: any
   constructor(props) {
     super(props);
+    
     this.state = {
       distance: 0,
       stake: 0,
       loading: false,
       txSent: false,
-      activity: {
-        label: 'Run 🏃‍♂️',
-        value: 'Run'
-      }
+      activities: []
     };
   }
 
-  async createCommitment() {
-    
+  async componentDidMount() {
     let provider =  new ethers.providers.InfuraProvider('ropsten','bec77b2c1b174308bcaa3e622828448f')
 
     
@@ -30,17 +28,56 @@ export default class MakeCommitment extends Component <{next: any, account: any,
     
     wallet = wallet.connect(provider);
     
-    let contractAddress = '0x425da152ee61a31dfc9daed2e3940c0525ce678f';
+    let contractAddress = '0x2f7544ef10f61b6950291fbE417416268945c0dc';
     let contract = new ethers.Contract(contractAddress, abi, provider);
 
-    let contractWithSigner = contract.connect(wallet);
+    this.contract = contract.connect(wallet);
 
-	const { width } = Dimensions.get('window');
+    let activities = [];
+    let exists = true;
+    let index = 0;
+
+    while (exists){
+      try {
+        const key = await this.contract.activityKeyList(index);
+        console.log(key);
+        const activity = await this.contract.activities(key);
+        activities.push(activity);
+        index++;
+      } catch (error) {
+        console.log(error)
+        exists = false;
+      }
+    }
+    const formattedActivities = activities.map(act => {
+      if(act[0] === 'Run') {
+        return {
+          label: 'Run 🏃‍♂️',
+          value: 'Run'
+        }
+      } else if (act[0] === 'Ride') {
+        return {
+          label: 'Ride 🚲',
+          value: 'Ride'
+        }
+      } else {
+        return {
+          label: act[0],
+          name: act[0]
+        }
+      }
+    })
+    this.setState({activities: formattedActivities})
+  }
+
+  async createCommitment() {
+
+	  const { width } = Dimensions.get('window');
     
     const distanceInKm = Math.floor(this.state.distance)
     const twoDays = new Date().getTime() - (86400 * 1000 * 2)
     this.setState({loading: true})
-    await contractWithSigner.makeCommitment(this.state.activity, String(this.props.code.athlete.id), distanceInKm * 100, twoDays, this.state.stake);
+    await this.contract.makeCommitment(this.state.activity, String(this.props.code.athlete.id), distanceInKm * 100, twoDays, this.state.stake);
     this.setState({loading: false, txSent: true})
   }
 
