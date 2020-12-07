@@ -62,7 +62,7 @@ Expo for web, iOS and Android development.
 
 <commitpool@gmail.com>
 
-Subscribe to our [Substack](https://com##  CommitPool Mobile repository
+Subscribe to our [Substack](https://https://commit.substack.com/)
 
 CommitPool helps people meet their personal goals by holding themselves accountable. CommitPool users stake money to credibly commit to meeting their goals, and lose their stake when they don’t.
 
