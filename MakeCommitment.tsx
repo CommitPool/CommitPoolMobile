@@ -1,12 +1,14 @@
 import React, { Component } from "react";
 import { View, StyleSheet, Image, Text, Button, TouchableOpacity, TextInput } from "react-native";
-import { ethers } from 'ethers';
+import { ethers, utils } from 'ethers';
 import abi from './abi.json'
+import daiAbi from './daiAbi.json'
 import { Dimensions } from 'react-native';
 import DropDownPicker from 'react-native-dropdown-picker';
 
-export default class MakeCommitment extends Component <{next: any, account: any, code: any}, {txSent: Boolean, loading: Boolean, distance: Number, stake: Number, activities: any}> {
-  contract: any
+export default class MakeCommitment extends Component <{next: any, account: any, code: any}, {txSent: Boolean, loading: Boolean, distance: Number, stake: Number, activity: {}, activities: any}> {
+  contract: any;
+  daiContract: any;
   constructor(props) {
     super(props);
     
@@ -15,6 +17,7 @@ export default class MakeCommitment extends Component <{next: any, account: any,
       stake: 0,
       loading: false,
       txSent: false,
+      activity: {},
       activities: []
     };
   }
@@ -28,10 +31,15 @@ export default class MakeCommitment extends Component <{next: any, account: any,
     
     wallet = wallet.connect(provider);
     
-    let contractAddress = '0x2f7544ef10f61b6950291fbE417416268945c0dc';
+    let contractAddress = '0x1FE457eF0655eb16B3F0AD7f987A2FFD9C6EC18C';
     let contract = new ethers.Contract(contractAddress, abi, provider);
 
+    let daiAddress = '0xc2118d4d90b274016cb7a54c03ef52e6c537d957';
+    let daiContract = new ethers.Contract(daiAddress, daiAbi, provider);
+    
     this.contract = contract.connect(wallet);
+    this.daiContract = daiContract.connect(wallet);
+
 
     let activities = [];
     let exists = true;
@@ -42,42 +50,56 @@ export default class MakeCommitment extends Component <{next: any, account: any,
         const key = await this.contract.activityKeyList(index);
         console.log(key);
         const activity = await this.contract.activities(key);
-        activities.push(activity);
+        const clone = Object.assign({}, activity)
+        clone.key = key;
+        activities.push(clone);
         index++;
       } catch (error) {
         console.log(error)
         exists = false;
       }
     }
+
+    console.log(activities)
     const formattedActivities = activities.map(act => {
+      console.log(act)
       if(act[0] === 'Run') {
         return {
           label: 'Run 🏃‍♂️',
-          value: 'Run'
+          value: act.key
         }
       } else if (act[0] === 'Ride') {
         return {
           label: 'Ride 🚲',
-          value: 'Ride'
+          value: act.key
         }
       } else {
         return {
           label: act[0],
-          name: act[0]
+          name: act.key
         }
       }
     })
-    this.setState({activities: formattedActivities})
+    console.log(formattedActivities)
+    this.setState({activities: formattedActivities, activity: formattedActivities[0]})
   }
 
   async createCommitment() {
-
 	  const { width } = Dimensions.get('window');
     
-    const distanceInKm = Math.floor(this.state.distance)
-    const twoDays = new Date().getTime() - (86400 * 1000 * 2)
+    const distanceInMiles = Math.floor(this.state.distance)
+    const startTime = new Date().getTime();
+    const stakeAmount = utils.parseEther(this.state.stake.toString());
     this.setState({loading: true})
-    await this.contract.makeCommitment(this.state.activity, String(this.props.code.athlete.id), distanceInKm * 100, twoDays, this.state.stake);
+
+    const allowance = await this.daiContract.allowance(this.props.account.signingKey.address, '0x1FE457eF0655eb16B3F0AD7f987A2FFD9C6EC18C');
+    if(allowance.isGreaterThanOrEqualTo(stakeAmount)) {
+      await this.contract.depositAndCommit(this.state.activity, distanceInMiles * 100, startTime, this.state.stake, this.state.stake, String(this.props.code.athlete.id));
+    } else {
+      await this.daiContract.approve('0x1FE457eF0655eb16B3F0AD7f987A2FFD9C6EC18C', stakeAmount)
+      await this.contract.depositAndCommit(this.state.activity, distanceInMiles * 100, startTime, this.state.stake, this.state.stake, String(this.props.code.athlete.id));
+    }
+
     this.setState({loading: false, txSent: true})
   }
 
@@ -85,13 +107,13 @@ export default class MakeCommitment extends Component <{next: any, account: any,
 
     const { width } = Dimensions.get('window');
 
-    const data = [{
-        label: 'Run 🏃‍♂️',
-        value: 'Run'
-      }, {
-        label: 'Bike 🚲',
-        value: 'Bike'
-      }];
+    // const data = [{
+    //     label: 'Run 🏃‍♂️',
+    //     value: 'Run'
+    //   }, {
+    //     label: 'Bike 🚲',
+    //     value: 'Bike'
+    //   }];
 
     return (
         <View style={{flex: 1, width, alignItems: 'center', justifyContent: 'space-around'}}>
@@ -103,7 +125,7 @@ export default class MakeCommitment extends Component <{next: any, account: any,
                     <View style={{flexDirection: "row", width: 300, padding: 10, zIndex: 5000}}>
                         <Text style={{flex: 1, color: 'white', fontSize: 28, fontWeight: 'bold'}}>Activity:</Text>
                         <DropDownPicker
-                            items={data}
+                            items={this.state.activities}
                             containerStyle={{height: 40}}
                             style={{backgroundColor: '#fafafa', width: 135}}
                             itemStyle={{
