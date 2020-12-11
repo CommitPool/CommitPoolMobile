@@ -3,7 +3,8 @@ import { View, StyleSheet, Image, Text, Button, TouchableOpacity } from "react-n
 import { AnimatedCircularProgress } from 'react-native-circular-progress';
 import { ethers } from 'ethers';
 import { AsyncStorage } from 'react-native';
-import abi from './abi2.json'
+import { Moment } from 'moment';
+import abi from './abi.json'
 
 export default class Track extends Component <{next: any, account: any, code: string}, {refreshToken: string, type: string, account:any, total: number, startTime: Number, endTime: Number, loading: Boolean, step: Number, fill: number, goal: number, accessToken: String}> {
   constructor(props) {
@@ -80,12 +81,12 @@ export default class Track extends Component <{next: any, account: any, code: st
 
     const commitment = await contract.commitments(this.state.account.signingKey.address)
 
-
+    const type = await contract.activities(commitment['activityKey'])
     this.setState({
       goal: commitment['goalValue'].toNumber() / 100,
-      startTime: commitment['start'].toNumber(),
-      endTime: commitment['end'].toNumber(),
-      type: commitment['activityType']
+      startTime: commitment['startTime'].toNumber(),
+      endTime: commitment['endTime'].toNumber(),
+      type: type[0]
     })
 
     this.getActivity();

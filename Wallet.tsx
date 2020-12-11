@@ -4,7 +4,7 @@ import ConfettiCannon from 'react-native-confetti-cannon';
 import QRCode from 'react-native-qrcode-svg';
 import { ethers } from 'ethers';
 import daiAbi from './daiAbi.json'
-import abi from './abi2.json'
+import abi from './abi.json'
 
 
 export default class Wallet extends Component <{next: any, account: any}, {balance: number, daiBalance: number, commitment: any}> {
@@ -43,7 +43,7 @@ export default class Wallet extends Component <{next: any, account: any}, {balan
     let commitPoolContractAddress = '0x1FE457eF0655eb16B3F0AD7f987A2FFD9C6EC18C';
     let commitPoolContract = new ethers.Contract(commitPoolContractAddress, abi, provider);
     const commitment = await commitPoolContract.commitments(this.props.account.signingKey.address);
-    console.log(commitment)
+
     if(commitment.exists){
       this.props.next(7)
     } else {
