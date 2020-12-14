@@ -18,12 +18,14 @@ export default class Wallet extends Component <{next: any, account: any}, {balan
   }
 
   async componentDidMount() {
-    let provider =  new ethers.providers.InfuraProvider('ropsten','bec77b2c1b174308bcaa3e622828448f');
+    const url = 'https://rpc-mumbai.maticvigil.com/v1/e121feda27b4c1387cd0bf9a441e8727f8e86f56'
+
+    const provider = new ethers.providers.JsonRpcProvider(url);
     
     let privateKey = this.props.account.signingKey.privateKey;
     let wallet = new ethers.Wallet(privateKey);
     wallet = wallet.connect(provider);
-    let contractAddress = '0xc2118d4d90b274016cb7a54c03ef52e6c537d957';
+    let contractAddress = '0xfe4F5145f6e09952a5ba9e956ED0C25e3Fa4c7F1';
     let contract = new ethers.Contract(contractAddress, daiAbi, provider);
     const daiBalance = await contract.balanceOf(this.props.account.signingKey.address)
     const balance = await wallet.getBalance();
@@ -39,8 +41,10 @@ export default class Wallet extends Component <{next: any, account: any}, {balan
   }
 
   async next() {
-    let provider =  new ethers.providers.InfuraProvider('ropsten','bec77b2c1b174308bcaa3e622828448f');
-    let commitPoolContractAddress = '0x1FE457eF0655eb16B3F0AD7f987A2FFD9C6EC18C';
+    const url = 'https://rpc-mumbai.maticvigil.com/v1/e121feda27b4c1387cd0bf9a441e8727f8e86f56'
+
+    const provider = new ethers.providers.JsonRpcProvider(url);
+    let commitPoolContractAddress = '0x71e18449B362C7028fb0367523c3204C0D540038';
     let commitPoolContract = new ethers.Contract(commitPoolContractAddress, abi, provider);
     const commitment = await commitPoolContract.commitments(this.props.account.signingKey.address);
 
@@ -63,8 +67,8 @@ export default class Wallet extends Component <{next: any, account: any}, {balan
                 />
                 <Text onPress={()=>Clipboard.setString(this.props.account.signingKey.address)} style={{fontSize: 14, color: 'white', marginTop: 10}}>{this.props.account.signingKey.address}</Text>
                 <Text style={{fontSize: 30, color: 'white', marginTop: 25, fontWeight: 'bold'}}>Balances:</Text>
-                <Text style={{fontSize: 30, color: 'white', marginTop: 25}}>{this.state.balance} ETH</Text>
-                <Text style={{fontSize: 30, color: 'white', marginTop: 25}}>{this.state.daiBalance} Dai</Text>
+                <Text style={{fontSize: 30, color: 'white', marginTop: 25}}>{this.state.balance} MATIC</Text>
+                <Text style={{fontSize: 30, color: 'white', marginTop: 25}}>{this.state.daiBalance} MATIC Dai</Text>
             </View>
             <TouchableOpacity
                     style={{width: 300, height: 50, backgroundColor: '#D45353', alignItems: 'center', justifyContent: 'center'}}

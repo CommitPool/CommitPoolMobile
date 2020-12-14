@@ -69,14 +69,15 @@ export default class Track extends Component <{next: any, account: any, code: st
   }
 
   async getCommitment() {    
-    let provider =  new ethers.providers.InfuraProvider('ropsten','bec77b2c1b174308bcaa3e622828448f')
-    
+    const url = 'https://rpc-mumbai.maticvigil.com/v1/e121feda27b4c1387cd0bf9a441e8727f8e86f56'
+
+    const provider = new ethers.providers.JsonRpcProvider(url);    
     let privateKey = this.state.account.signingKey.privateKey;
     let wallet = new ethers.Wallet(privateKey);
     
     wallet = wallet.connect(provider);
     
-    let contractAddress = '0x1FE457eF0655eb16B3F0AD7f987A2FFD9C6EC18C';
+    let contractAddress = '0x71e18449B362C7028fb0367523c3204C0D540038';
     let contract = new ethers.Contract(contractAddress, abi, provider);
 
     const commitment = await contract.commitments(this.state.account.signingKey.address)
@@ -112,7 +113,9 @@ export default class Track extends Component <{next: any, account: any, code: st
 
   async getUpdatedActivity() {
     
-    let provider = new ethers.providers.InfuraProvider('ropsten','bec77b2c1b174308bcaa3e622828448f')
+    const url = 'https://rpc-mumbai.maticvigil.com/v1/e121feda27b4c1387cd0bf9a441e8727f8e86f56'
+
+    const provider = new ethers.providers.JsonRpcProvider(url);
     
     let privateKey = this.props.account.signingKey.privateKey;
     let wallet = new ethers.Wallet(privateKey);
@@ -120,7 +123,7 @@ export default class Track extends Component <{next: any, account: any, code: st
     wallet = wallet.connect(provider);
 
     
-    let contractAddress = '0x1FE457eF0655eb16B3F0AD7f987A2FFD9C6EC18C';
+    let contractAddress = '0x71e18449B362C7028fb0367523c3204C0D540038';
     let contract = new ethers.Contract(contractAddress, abi, provider);
 
     let contractWithSigner = contract.connect(wallet);

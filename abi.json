@@ -534,7 +534,7 @@
 		"outputs": [
 			{
 				"internalType": "address",
-				"name": "",
+				"name": "tokenAddress",
 				"type": "address"
 			}
 		],
@@ -624,7 +624,7 @@
 		"outputs": [
 			{
 				"internalType": "bool",
-				"name": "",
+				"name": "success",
 				"type": "bool"
 			}
 		],

@@ -23,18 +23,19 @@ export default class MakeCommitment extends Component <{next: any, account: any,
   }
 
   async componentDidMount() {
-    let provider =  new ethers.providers.InfuraProvider('ropsten','bec77b2c1b174308bcaa3e622828448f')
+    const url = 'https://rpc-mumbai.maticvigil.com/v1/e121feda27b4c1387cd0bf9a441e8727f8e86f56'
 
+    const provider = new ethers.providers.JsonRpcProvider(url);
     
     let privateKey = this.props.account.signingKey.privateKey;
     let wallet = new ethers.Wallet(privateKey);
     
     wallet = wallet.connect(provider);
     
-    let contractAddress = '0x1FE457eF0655eb16B3F0AD7f987A2FFD9C6EC18C';
+    let contractAddress = '0x71e18449B362C7028fb0367523c3204C0D540038';
     let contract = new ethers.Contract(contractAddress, abi, provider);
 
-    let daiAddress = '0xc2118d4d90b274016cb7a54c03ef52e6c537d957';
+    let daiAddress = '0xfe4F5145f6e09952a5ba9e956ED0C25e3Fa4c7F1';
     let daiContract = new ethers.Contract(daiAddress, daiAbi, provider);
     
     this.contract = contract.connect(wallet);
@@ -76,7 +77,7 @@ export default class MakeCommitment extends Component <{next: any, account: any,
       } else {
         return {
           label: act[0],
-          name: act.key
+          value: act.key
         }
       }
     })
@@ -92,12 +93,22 @@ export default class MakeCommitment extends Component <{next: any, account: any,
     const stakeAmount = utils.parseEther(this.state.stake.toString());
     this.setState({loading: true})
 
-    const allowance = await this.daiContract.allowance(this.props.account.signingKey.address, '0x1FE457eF0655eb16B3F0AD7f987A2FFD9C6EC18C');
-    if(allowance.isGreaterThanOrEqualTo(stakeAmount)) {
-      await this.contract.depositAndCommit(this.state.activity, distanceInMiles * 100, startTime, this.state.stake, this.state.stake, String(this.props.code.athlete.id));
+    const allowance = await this.daiContract.allowance(this.props.account.signingKey.address, '0x71e18449B362C7028fb0367523c3204C0D540038');
+    console.log('allow ',allowance)
+    if(false) {
+      console.log(this.state.activity, distanceInMiles * 100, startTime, stakeAmount, stakeAmount, String(this.props.code.athlete.id))
+      const result = await this.contract.deposit(stakeAmount, {gasLimit: 2000000000})
+      console.log(result)
+      // await this.contract.depositAndCommit(this.state.activity, distanceInMiles * 100, startTime, stakeAmount, stakeAmount, String(this.props.code.athlete.id), {gasLimit: 500000});
     } else {
-      await this.daiContract.approve('0x1FE457eF0655eb16B3F0AD7f987A2FFD9C6EC18C', stakeAmount)
-      await this.contract.depositAndCommit(this.state.activity, distanceInMiles * 100, startTime, this.state.stake, this.state.stake, String(this.props.code.athlete.id));
+      console.log(1)
+      await this.daiContract.approve('0x71e18449B362C7028fb0367523c3204C0D540038', stakeAmount)
+      console.log(2)
+      // const result = await this.contract.deposit(stakeAmount, {gasLimit: 2000000000})
+      // console.log(result)
+      const result = await this.contract.depositAndCommit(this.state.activity, distanceInMiles * 100, startTime, stakeAmount, stakeAmount, String(this.props.code.athlete.id), {gasLimit: 1000000000});
+      console.log(result)
+      console.log(3)
     }
 
     this.setState({loading: false, txSent: true})
