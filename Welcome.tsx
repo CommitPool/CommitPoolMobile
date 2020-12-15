@@ -3,9 +3,7 @@ import { View, Image, Text, TouchableOpacity, StyleSheet } from "react-native";
 import {LinearGradient} from 'expo-linear-gradient'
 import { Dimensions } from 'react-native';
 
-
-
-export default  class Login extends React.Component <{stravaOAuth: any, next: any, code: string}, {}>{
+export default  class Welcome extends React.Component <{next: any}, {}>{
 
   render() {
     return (
@@ -20,10 +18,13 @@ export default  class Login extends React.Component <{stravaOAuth: any, next: an
                   source={require('./assets/commit.png')}
               />
               <Text style={{ color: 'white', fontSize: 50}}>
-                  This is the login
+                  This is the welcome
               </Text>
           </View>
-          <TouchableOpacity onPress={this.props.stravaOAuth}>
+          <TouchableOpacity onPress={this.props.next(2)}>
+          <Text style={{ color: 'white', fontSize: 50}}>
+                  This is the welcome
+              </Text>
               <Image
                   style={{width: 300, height: 50}}
                   source={require('./assets/strava.svg')}

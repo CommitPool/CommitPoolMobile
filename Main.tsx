@@ -7,6 +7,8 @@ import Track from './Track'
 import MakeCommitment from './MakeCommitment'
 import Complete from './Complete'
 import Wallet from './Wallet'
+import Welcome from './Welcome'
+
 import { Dimensions } from 'react-native';
 import {LinearGradient} from 'expo-linear-gradient'
 
@@ -32,6 +34,8 @@ export default class Main extends Component <{account: any, stravaOAuth: any, co
   renderSwitch = () => {
     switch(this.state.step) {
         case 1: 
+            return <Welcome next={this.onClick}></Welcome>
+        case 2: 
             return <Login next={this.onClick} stravaOAuth={this.props.stravaOAuth} code={this.props.code}></Login>
         case 4:
             return (
