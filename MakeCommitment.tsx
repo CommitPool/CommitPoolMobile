@@ -32,7 +32,7 @@ export default class MakeCommitment extends Component <{next: any, account: any,
     
     wallet = wallet.connect(provider);
     
-    let contractAddress = '0x71e18449B362C7028fb0367523c3204C0D540038';
+    let contractAddress = '0xF73CE8E7ae4398D7a3ab09c1a86e7BdEF84aDDEF';
     let contract = new ethers.Contract(contractAddress, abi, provider);
 
     let daiAddress = '0xfe4F5145f6e09952a5ba9e956ED0C25e3Fa4c7F1';
@@ -88,27 +88,20 @@ export default class MakeCommitment extends Component <{next: any, account: any,
   async createCommitment() {
 	  const { width } = Dimensions.get('window');
     
-    const distanceInMiles = Math.floor(this.state.distance)
-    const startTime = new Date().getTime();
+    const distanceInMiles = Math.floor(this.state.distance);
+    const startTime = Math.ceil(new Date().getTime() / 1000);
     const stakeAmount = utils.parseEther(this.state.stake.toString());
     this.setState({loading: true})
 
-    const allowance = await this.daiContract.allowance(this.props.account.signingKey.address, '0x71e18449B362C7028fb0367523c3204C0D540038');
-    console.log('allow ',allowance)
-    if(false) {
-      console.log(this.state.activity, distanceInMiles * 100, startTime, stakeAmount, stakeAmount, String(this.props.code.athlete.id))
-      const result = await this.contract.deposit(stakeAmount, {gasLimit: 2000000000})
-      console.log(result)
-      // await this.contract.depositAndCommit(this.state.activity, distanceInMiles * 100, startTime, stakeAmount, stakeAmount, String(this.props.code.athlete.id), {gasLimit: 500000});
+    // const allowance = await this.daiContract.allowance(this.props.account.signingKey.address, '0xF73CE8E7ae4398D7a3ab09c1a86e7BdEF84aDDEF');
+    await this.daiContract.approve('0xF73CE8E7ae4398D7a3ab09c1a86e7BdEF84aDDEF', stakeAmount)
+    if(true) {
+      const value = await this.contract.deposit(stakeAmount, {gasLimit: 5000000});
+      console.log(value)
+      // await this.contract.depositAndCommit(this.state.activity, distanceInMiles * 100, startTime, stakeAmount, stakeAmount, String(this.props.code.athlete.id), {gasLimit: 2000000000});
     } else {
-      console.log(1)
-      await this.daiContract.approve('0x71e18449B362C7028fb0367523c3204C0D540038', stakeAmount)
-      console.log(2)
-      // const result = await this.contract.deposit(stakeAmount, {gasLimit: 2000000000})
-      // console.log(result)
-      const result = await this.contract.depositAndCommit(this.state.activity, distanceInMiles * 100, startTime, stakeAmount, stakeAmount, String(this.props.code.athlete.id), {gasLimit: 1000000000});
-      console.log(result)
-      console.log(3)
+      await this.daiContract.approve('0xF73CE8E7ae4398D7a3ab09c1a86e7BdEF84aDDEF', stakeAmount)
+      await this.contract.depositAndCommit(this.state.activity, distanceInMiles * 100, startTime, stakeAmount, stakeAmount, String(this.props.code.athlete.id), {gasLimit: 2000000000});
     }
 
     this.setState({loading: false, txSent: true})
