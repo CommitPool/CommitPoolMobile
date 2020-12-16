@@ -32,7 +32,7 @@ export default class MakeCommitment extends Component <{next: any, account: any,
     
     wallet = wallet.connect(provider);
     
-    let contractAddress = '0xF73CE8E7ae4398D7a3ab09c1a86e7BdEF84aDDEF';
+    let contractAddress = '0xfa472De01896222d152eA4549e098502Ab260e7c';
     let contract = new ethers.Contract(contractAddress, abi, provider);
 
     let daiAddress = '0xfe4F5145f6e09952a5ba9e956ED0C25e3Fa4c7F1';
@@ -89,18 +89,29 @@ export default class MakeCommitment extends Component <{next: any, account: any,
 	  const { width } = Dimensions.get('window');
     
     const distanceInMiles = Math.floor(this.state.distance);
-    const startTime = Math.ceil(new Date().getTime() / 1000);
+    const startTime = new Date().getTime() + 60;
     const stakeAmount = utils.parseEther(this.state.stake.toString());
     this.setState({loading: true})
 
-    // const allowance = await this.daiContract.allowance(this.props.account.signingKey.address, '0xF73CE8E7ae4398D7a3ab09c1a86e7BdEF84aDDEF');
-    await this.daiContract.approve('0xF73CE8E7ae4398D7a3ab09c1a86e7BdEF84aDDEF', stakeAmount)
-    if(true) {
-      const value = await this.contract.deposit(stakeAmount, {gasLimit: 5000000});
-      console.log(value)
-      // await this.contract.depositAndCommit(this.state.activity, distanceInMiles * 100, startTime, stakeAmount, stakeAmount, String(this.props.code.athlete.id), {gasLimit: 2000000000});
+    // // const allowance = await this.daiContract.allowance(this.props.account.signingKey.address, '0xfa472De01896222d152eA4549e098502Ab260e7c');
+    // if(true) {
+    //   await this.daiContract.approve('0xfa472De01896222d152eA4549e098502Ab260e7c', stakeAmount)
+    //   // const value = await this.contract.deposit(stakeAmount, {gasLimit: 5000000});
+    //   // console.log(value)
+    //   console.log(this.state.activity, distanceInMiles * 100, startTime, stakeAmount, stakeAmount, String(this.props.code.athlete.id))
+    //   await this.contract.makeCommitment(this.state.activity, distanceInMiles * 100, startTime, stakeAmount, String(this.props.code.athlete.id), {gasLimit: 5000000});
+    // } else {
+    //   await this.daiContract.approve('0xfa472De01896222d152eA4549e098502Ab260e7c', stakeAmount)
+    //   await this.contract.depositAndCommit(this.state.activity, distanceInMiles * 100, startTime, stakeAmount, stakeAmount, String(this.props.code.athlete.id), {gasLimit: 2000000000});
+    // }
+
+    
+    const allowance = await this.daiContract.allowance(this.props.account.signingKey.address, '0xfa472De01896222d152eA4549e098502Ab260e7c');
+    // await this.daiContract.approve('0xfa472De01896222d152eA4549e098502Ab260e7c', stakeAmount)
+    if(allowance.gte(stakeAmount)) {
+      await this.contract.depositAndCommit(this.state.activity, distanceInMiles * 100, startTime, stakeAmount, stakeAmount, String(this.props.code.athlete.id), {gasLimit: 2000000000});
     } else {
-      await this.daiContract.approve('0xF73CE8E7ae4398D7a3ab09c1a86e7BdEF84aDDEF', stakeAmount)
+      await this.daiContract.approve('0xfa472De01896222d152eA4549e098502Ab260e7c', stakeAmount)
       await this.contract.depositAndCommit(this.state.activity, distanceInMiles * 100, startTime, stakeAmount, stakeAmount, String(this.props.code.athlete.id), {gasLimit: 2000000000});
     }
 

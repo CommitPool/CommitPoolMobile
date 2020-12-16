@@ -44,7 +44,7 @@ export default class Wallet extends Component <{next: any, account: any}, {balan
     const url = 'https://rpc-mumbai.maticvigil.com/v1/e121feda27b4c1387cd0bf9a441e8727f8e86f56'
 
     const provider = new ethers.providers.JsonRpcProvider(url);
-    let commitPoolContractAddress = '0xF73CE8E7ae4398D7a3ab09c1a86e7BdEF84aDDEF';
+    let commitPoolContractAddress = '0xfa472De01896222d152eA4549e098502Ab260e7c';
     let commitPoolContract = new ethers.Contract(commitPoolContractAddress, abi, provider);
     try {
       const commitment = await commitPoolContract.commitments(this.props.account.signingKey.address);
