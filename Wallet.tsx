@@ -25,7 +25,7 @@ export default class Wallet extends Component <{next: any, account: any}, {balan
     let privateKey = this.props.account.signingKey.privateKey;
     let wallet = new ethers.Wallet(privateKey);
     wallet = wallet.connect(provider);
-    let contractAddress = '0xfe4F5145f6e09952a5ba9e956ED0C25e3Fa4c7F1';
+    let contractAddress = '0x70d1f773a9f81c852087b77f6ae6d3032b02d2ab';
     let contract = new ethers.Contract(contractAddress, daiAbi, provider);
     const daiBalance = await contract.balanceOf(this.props.account.signingKey.address)
     const balance = await wallet.getBalance();
@@ -44,7 +44,7 @@ export default class Wallet extends Component <{next: any, account: any}, {balan
     const url = 'https://rpc-mumbai.maticvigil.com/v1/e121feda27b4c1387cd0bf9a441e8727f8e86f56'
 
     const provider = new ethers.providers.JsonRpcProvider(url);
-    let commitPoolContractAddress = '0xfa472De01896222d152eA4549e098502Ab260e7c';
+    let commitPoolContractAddress = '0x66D67eC654250e1efDdB282a40bA17c9148fC1E9';
     let commitPoolContract = new ethers.Contract(commitPoolContractAddress, abi, provider);
     try {
       const commitment = await commitPoolContract.commitments(this.props.account.signingKey.address);

@@ -77,7 +77,7 @@ export default class Track extends Component <{next: any, account: any, code: st
     
     wallet = wallet.connect(provider);
     
-    let contractAddress = '0xfa472De01896222d152eA4549e098502Ab260e7c';
+    let contractAddress = '0x66D67eC654250e1efDdB282a40bA17c9148fC1E9';
     let contract = new ethers.Contract(contractAddress, abi, provider);
 
     const commitment = await contract.commitments(this.state.account.signingKey.address)
@@ -123,7 +123,7 @@ export default class Track extends Component <{next: any, account: any, code: st
     wallet = wallet.connect(provider);
 
     
-    let contractAddress = '0xfa472De01896222d152eA4549e098502Ab260e7c';
+    let contractAddress = '0x66D67eC654250e1efDdB282a40bA17c9148fC1E9';
     let contract = new ethers.Contract(contractAddress, abi, provider);
 
     let contractWithSigner = contract.connect(wallet);
