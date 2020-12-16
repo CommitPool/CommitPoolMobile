@@ -1,5 +1,5 @@
 import React, { Component } from "react";
-import { View, StyleSheet, Image, Text, Button, TouchableOpacity, Clipboard } from "react-native";
+import { View, Linking, StyleSheet, Image, Text, Button, TouchableOpacity, Clipboard } from "react-native";
 import ConfettiCannon from 'react-native-confetti-cannon';
 import QRCode from 'react-native-qrcode-svg';
 import { ethers } from 'ethers';
@@ -56,6 +56,8 @@ export default class Wallet extends Component <{next: any, account: any}, {balan
 
             <View style={{alignItems: 'center'}}>
                 <Text style={{fontSize: 50, color: 'white', marginBottom: 70}}>Add Funds</Text>
+                <Text style={{fontSize: 20, color: 'white', marginBottom: 10}}>This is your local wallet. We've created one for you, so you only need to add funds</Text>
+                <Text style={{fontSize: 15, color: 'white', marginBottom: 70}}>For this version, you could use https://faucet.matic.network</Text>
                 <QRCode
                     value="this.props.account.signingKey.address"
                     size={225}

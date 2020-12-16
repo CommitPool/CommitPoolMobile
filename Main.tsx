@@ -39,7 +39,6 @@ export default class Main extends Component<
         return (
           <Welcome
             next={this.onClick}
-            stravaOAuth={this.props.stravaOAuth}
             code={this.props.code}
           ></Welcome>
         );

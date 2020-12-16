@@ -26,7 +26,13 @@ export default class Login extends React.Component<
               source={require("./assets/commit.png")}
             />
             <Text style={{ color: "white", fontSize: 50 }}>
-              This is the login
+              Login to Strava 
+            </Text>
+            <Text style={{ color: "white", fontSize: 20 }}>
+              First, we need to get you set up.
+            </Text>
+            <Text style={{ color: "white", fontSize: 20 }}>
+              To verify your achievement, we rely on activity data that you share with Strava
             </Text>
           </View>
           <TouchableOpacity onPress={this.props.stravaOAuth}>
