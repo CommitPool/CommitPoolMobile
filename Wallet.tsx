@@ -56,16 +56,18 @@ export default class Wallet extends Component <{next: any, account: any}, {balan
 
             <View style={{alignItems: 'center'}}>
                 <Text style={{fontSize: 50, color: 'white', marginBottom: 70}}>Add Funds</Text>
-                <Text style={{fontSize: 20, color: 'white', marginBottom: 10}}>This is your local wallet. We've created one for you, so you only need to add funds</Text>
-                <Text style={{fontSize: 15, color: 'white', marginBottom: 70}}>For this version, you could use https://faucet.matic.network</Text>
+                <Text style={{fontSize: 20, textAlign: 'center', color: 'white', marginBottom: 10}}>This is your local wallet. We've created one for you here in your browser. 
+                {"\n"}
+                All you need to do is add funds by transferring them to this wallet's adddress below.</Text>
+                <Text style={{fontSize: 15, color: 'white', marginBottom: 70}}>You can get funds on testnet from https://faucet.matic.network</Text>
                 <QRCode
                     value="this.props.account.signingKey.address"
                     size={225}
                 />
                 <Text onPress={()=>Clipboard.setString(this.props.account.signingKey.address)} style={{fontSize: 14, color: 'white', marginTop: 10}}>{this.props.account.signingKey.address}</Text>
-                <Text style={{fontSize: 30, color: 'white', marginTop: 25, fontWeight: 'bold'}}>Balances:</Text>
-                <Text style={{fontSize: 30, color: 'white', marginTop: 25}}>{this.state.balance} ETH</Text>
-                <Text style={{fontSize: 30, color: 'white', marginTop: 25}}>{this.state.daiBalance} Dai</Text>
+                <Text style={{fontSize: 25, color: 'white', marginTop: 25, fontWeight: 'bold'}}>Balances:</Text>
+                <Text style={{fontSize: 25, color: 'white', marginTop: 15}}>{this.state.balance} ETH</Text>
+                <Text style={{fontSize: 25, color: 'white', marginTop: 10}}>{this.state.daiBalance} Dai</Text>
             </View>
             <TouchableOpacity
                     style={{width: 300, height: 50, backgroundColor: '#D45353', alignItems: 'center', justifyContent: 'center'}}

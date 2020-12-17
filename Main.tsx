@@ -1,7 +1,7 @@
 import React, { Component } from "react";
 import { View, Image, Text, TouchableOpacity, StyleSheet } from "react-native";
 import Login from "./Login";
-import Commit from "./Commit";
+// import Commit from "./Commit";
 import Track from "./Track";
 import MakeCommitment from "./MakeCommitment";
 import Complete from "./Complete";
@@ -59,16 +59,16 @@ export default class Main extends Component<
             <Wallet next={this.onClick} account={this.props.account}></Wallet>
           </LinearGradient>
         );
+      // case 5:
+      //   return (
+      //     <LinearGradient
+      //       colors={["#D45353", "#D45353", "white"]}
+      //       style={styles.linearGradient}
+      //     >
+      //       <Commit next={this.onClick}></Commit>
+      //     </LinearGradient>
+      //   );
       case 5:
-        return (
-          <LinearGradient
-            colors={["#D45353", "#D45353", "white"]}
-            style={styles.linearGradient}
-          >
-            <Commit next={this.onClick}></Commit>
-          </LinearGradient>
-        );
-      case 6:
         return (
           <LinearGradient
             colors={["#D45353", "#D45353", "white"]}
@@ -81,7 +81,7 @@ export default class Main extends Component<
             ></MakeCommitment>
           </LinearGradient>
         );
-      case 7:
+      case 6:
         return (
           <Track
             next={this.onClick}
@@ -89,7 +89,7 @@ export default class Main extends Component<
             code={this.props.code}
           ></Track>
         );
-      case 8:
+      case 7:
         return (
           <Complete next={this.onClick} account={this.props.account}></Complete>
         );
