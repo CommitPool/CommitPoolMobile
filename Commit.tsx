@@ -16,10 +16,8 @@ export default class Commit extends Component <{next: any}, {step: Number}> {
   render() {
     return (
         <View style={{flex: 1, alignItems: 'center', justifyContent: 'space-around'}}>
-            <Text style={{ color: 'white', fontSize: 50, textAlign: 'center'}}>
-                Hi Jeff,{"\n"}
-                {"\n"}
-                Ready to Commit?
+            <Text style={{ color: 'white', fontSize: 30, textAlign: 'center'}}>
+               {"Now you're set-up with Strava and funds, you can set your goals and stake."} 
             </Text>
             <TouchableOpacity
                     style={{width: 300, height: 50, backgroundColor: '#D45353', alignItems: 'center', justifyContent: 'center'}}
