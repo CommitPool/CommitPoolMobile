@@ -4,7 +4,7 @@ import ConfettiCannon from 'react-native-confetti-cannon';
 import QRCode from 'react-native-qrcode-svg';
 import { ethers } from 'ethers';
 import daiAbi from './daiAbi.json'
-import abi from './abi2.json'
+import abi from './abi.json'
 
 
 export default class Wallet extends Component <{next: any, account: any}, {balance: number, daiBalance: number, commitment: any}> {
@@ -18,12 +18,14 @@ export default class Wallet extends Component <{next: any, account: any}, {balan
   }
 
   async componentDidMount() {
-    let provider =  new ethers.providers.InfuraProvider('ropsten','bec77b2c1b174308bcaa3e622828448f');
+    const url = 'https://rpc-mumbai.maticvigil.com/v1/e121feda27b4c1387cd0bf9a441e8727f8e86f56'
+
+    const provider = new ethers.providers.JsonRpcProvider(url);
     
     let privateKey = this.props.account.signingKey.privateKey;
     let wallet = new ethers.Wallet(privateKey);
     wallet = wallet.connect(provider);
-    let contractAddress = '0xc2118d4d90b274016cb7a54c03ef52e6c537d957';
+    let contractAddress = '0x70d1f773a9f81c852087b77f6ae6d3032b02d2ab';
     let contract = new ethers.Contract(contractAddress, daiAbi, provider);
     const daiBalance = await contract.balanceOf(this.props.account.signingKey.address)
     const balance = await wallet.getBalance();
@@ -39,13 +41,19 @@ export default class Wallet extends Component <{next: any, account: any}, {balan
   }
 
   async next() {
-    let provider =  new ethers.providers.InfuraProvider('ropsten','bec77b2c1b174308bcaa3e622828448f');
-    let commitPoolContractAddress = '0x425da152ee61a31dfc9daed2e3940c0525ce678f';
+    const url = 'https://rpc-mumbai.maticvigil.com/v1/e121feda27b4c1387cd0bf9a441e8727f8e86f56'
+
+    const provider = new ethers.providers.JsonRpcProvider(url);
+    let commitPoolContractAddress = '0x251B6f95F6A17D2aa350456f616a84b733380eBE';
     let commitPoolContract = new ethers.Contract(commitPoolContractAddress, abi, provider);
-    const commitment = await commitPoolContract.commitments(this.props.account.signingKey.address)
-    if(commitment.exists){
-      this.props.next(7)
-    } else {
+    try {
+      const commitment = await commitPoolContract.commitments(this.props.account.signingKey.address);
+      if(commitment.exists){
+        this.props.next(7)
+      } else {
+        this.props.next(5)
+      }
+    } catch (error) {
       this.props.next(5)
     }
   }
@@ -65,9 +73,9 @@ export default class Wallet extends Component <{next: any, account: any}, {balan
                     size={225}
                 />
                 <Text onPress={()=>Clipboard.setString(this.props.account.signingKey.address)} style={{fontSize: 14, color: 'white', marginTop: 10}}>{this.props.account.signingKey.address}</Text>
-                <Text style={{fontSize: 25, color: 'white', marginTop: 25, fontWeight: 'bold'}}>Balances:</Text>
-                <Text style={{fontSize: 25, color: 'white', marginTop: 15}}>{this.state.balance} ETH</Text>
-                <Text style={{fontSize: 25, color: 'white', marginTop: 10}}>{this.state.daiBalance} Dai</Text>
+                <Text style={{fontSize: 30, color: 'white', marginTop: 25, fontWeight: 'bold'}}>Balances:</Text>
+                <Text style={{fontSize: 30, color: 'white', marginTop: 25}}>{this.state.balance} MATIC</Text>
+                <Text style={{fontSize: 30, color: 'white', marginTop: 25}}>{this.state.daiBalance} MATIC Dai</Text>
             </View>
             <TouchableOpacity
                     style={{width: 300, height: 50, backgroundColor: '#D45353', alignItems: 'center', justifyContent: 'center'}}
