@@ -1,6 +1,6 @@
 import * as React from "react";
 import {
-  View,
+View,
   Image,
   Modal,
   Text,
@@ -29,37 +29,44 @@ export default class Welcome extends React.Component<
         >
           <View style={{ alignItems: "center" }}>
             <Text style={{ textAlign: "center", color: "white", fontSize: 30, marginBottom: 25 }}>
-              {"Hi Jeff,"}
+              {"Hey there,"}
               {"\n"}
-              {"You have personal goals, but sticking to them can be hard!"}
+              {"You have personal goals, but sticking to them is hard."}
               {"\n"}
-              {"CommitPool is here to help :)"}
+              {"CommitPool is here to help you hold yourself accountable! 💪"}
             </Text>
-            <Text style={{ textAlign: "center", color: "white", fontSize: 20, marginBottom: 25 }}>
+            <Text style={{ textAlign: "center", color: "white", fontSize: 25, marginBottom: 5 }}>
               {"Here's how it works:"}
-              {"\n"}
-              {"1. Set a goal and make a commitment to yourself"}
-              {"\n"}
-              {"2. Stake some money on your commitment"}
-              {"\n"}
-              {"3. Get going!"}
-              {"\n"}
-              {
-                "4. When you complete your goal, you get your money back. But if you come up short of your goal, you lose your money."
-              }
             </Text>
+            <Text style={{ textAlign: "left", color: "white", fontSize: 20, marginBottom: 25 }}>
+              
+              {"\n"}
+              {"1. Set a goal for yourself"}
+              {"\n"}
+              {"2. Stake some money on that goal to make it a real commitment"}
+              {"\n"}
+              {"3. Get going on your goal!"}
+              {"\n"}
+              {"\n"}
+              {"When you complete your goal, you get your money back. 🎉"}
+              {"\n"}
+              {"But if you come up short of your goal, you lose your stake. 😬"}
+            </Text>
+            <Text style={{ fontStyle: "italic", textAlign: "center", color: "white", fontSize: 25, marginBottom: 0 }}>
+              {"For example:"}
+              </Text>
             <Text
               style={{
                 fontStyle: "italic",
                 textAlign: "center",
                 color: "white",
                 fontSize: 20,
-                marginBottom: 25
+                marginBottom: 15
               }}
             >
-              {"For example:"}
+              
               {"\n"}
-              {"I’m going to bike 50 miles in the next week"}
+              {"My goal is to bike 50 miles in the next week"}
               {"\n"}
               {"and I'm staking $10 on my succes"}
             </Text>
@@ -69,10 +76,10 @@ export default class Welcome extends React.Component<
             onPress={() => this.props.next(2)}
           >
             <Image
-              style={{ width: 200, height: 200 }}
+              style={{ width: 100, height: 100 }}
               source={require("./assets/commit.png")}
             />
-            <Text style={{ color: "#D45353", fontSize: 50 }}>
+            <Text style={{ color: "#D45353", fontSize: 40 }}>
               Ready to commit? 
             </Text>
           </TouchableOpacity>

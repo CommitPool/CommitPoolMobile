@@ -62,7 +62,10 @@ export default class MakeCommitment extends Component <{next: any, account: any,
             {!this.state.txSent ? 
             <View style={{flex: 1, alignItems: 'center', justifyContent: 'space-around'}}>
                 <View style={{alignItems: 'center'}}>
-                    <Text style={{fontSize: 50, color: 'white', marginBottom: 25, textAlign: 'center'}}>Create Commitment</Text>
+                <Text style={{ color: 'white', fontSize: 30, textAlign: 'center', marginBottom: 25}}>
+               {"Now that you've connected Strava and have funds in your wallet, you can set up your commitment!"} 
+            </Text>
+                    <Text style={{fontSize: 30, color: 'white', marginBottom: 25, textAlign: 'center'}}>Create Commitment</Text>
                     <View style={{flexDirection: "row", width: 300, padding: 10, zIndex: 5000}}>
                         <Text style={{flex: 1, color: 'white', fontSize: 28, fontWeight: 'bold'}}>Activity:</Text>
                         <DropDownPicker
