@@ -442,12 +442,12 @@
 		},
 		{
 		  "internalType": "uint256",
-		  "name": "_daysToStart",
+		  "name": "_startTime",
 		  "type": "uint256"
 		},
 		{
 		  "internalType": "uint256",
-		  "name": "_amountOfDays",
+		  "name": "_endTime",
 		  "type": "uint256"
 		},
 		{
@@ -579,12 +579,12 @@
 		},
 		{
 		  "internalType": "uint256",
-		  "name": "_daysToStart",
+		  "name": "_startTime",
 		  "type": "uint256"
 		},
 		{
 		  "internalType": "uint256",
-		  "name": "_amountOfDays",
+		  "name": "_endTime",
 		  "type": "uint256"
 		},
 		{

@@ -1,11 +1,11 @@
 import React, { Component } from "react";
-import { View, StyleSheet, Image, Text, Button, TouchableOpacity, TextInput, Platform } from "react-native";
+import { View, Text, TouchableOpacity, TextInput } from "react-native";
 import { ethers, utils } from 'ethers';
 import abi from './abi.json'
 import daiAbi from './daiAbi.json'
 import { Dimensions } from 'react-native';
 import DropDownPicker from 'react-native-dropdown-picker';
-export default class MakeCommitment extends Component <{next: any, account: any, code: any}, {startDate: any, endDate: any, focusedInput: any, txSent: Boolean, loading: Boolean, distance: Number, stake: Number, daysToStart: Number, amountOfDays: Number, activity: {}, activities: any}> {
+export default class MakeCommitment extends Component <{next: any, account: any, code: any}, {txSent: Boolean, loading: Boolean, distance: Number, stake: Number, daysToStart: Number, duration: Number, activity: {}, activities: any}> {
   contract: any;
   daiContract: any;
 
@@ -13,13 +13,10 @@ export default class MakeCommitment extends Component <{next: any, account: any,
     super(props);
     
     this.state = {
-      startDate: null,
-      endDate: null,
-      focusedInput: null,
-       distance: 0,
+      distance: 0,
       stake: 0,
       daysToStart: 0,
-      amountOfDays: 0,
+      duration: 0,
       loading: false,
       txSent: false,
       activity: {},
@@ -86,32 +83,45 @@ export default class MakeCommitment extends Component <{next: any, account: any,
     this.setState({activities: formattedActivities, activity: formattedActivities[0]})
   }
 
+  addDays = (date: Date, days: number) => {
+    const result = new Date(date);
+    result.setDate(result.getDate() + days);
+    return result;
+  }
+
+  calculateStart = (_daysToStart: number) => {
+    const result = _daysToStart === 0 ? 
+                              new Date() :
+                              this.addDays(new Date(), _daysToStart)
+    result.setHours(0,0,0,0); //start at next day 00:00
+    return result;
+  }
+
+  calculateEnd = (_startTime: Date, _duration: number) => {
+    const result = this.addDays(_startTime, _duration)
+    result.setHours(24,0,0,0); //give until end of day
+    return result;
+  }
+
   async createCommitment() {    
     const distanceInMiles = Math.floor(this.state.distance);
-    const startTime = Math.ceil(new Date().getTime() / 1000) + 60;
+    const startTime = this.calculateStart(this.state.daysToStart);
+    const startTimestamp = Math.ceil(startTime.valueOf() /1000); //to seconds
+    const endTimestamp = Math.ceil(this.calculateEnd(startTime, this.state.duration).valueOf() /1000); //to seconds
+
     const stakeAmount = utils.parseEther(this.state.stake.toString());
     this.setState({loading: true})
     
     const allowance = await this.daiContract.allowance(this.props.account.signingKey.address, '0x251B6f95F6A17D2aa350456f616a84b733380eBE');
     if(allowance.gte(stakeAmount)) {
-      await this.contract.depositAndCommit(this.state.activity, distanceInMiles * 100, this.state.daysToStart, this.state.amountOfDays, stakeAmount, stakeAmount, String(this.props.code.athlete.id), {gasLimit: 5000000});
+      await this.contract.depositAndCommit(this.state.activity, distanceInMiles * 100, startTimestamp, endTimestamp, stakeAmount, stakeAmount, String(this.props.code.athlete.id), {gasLimit: 5000000});
     } else {
       await this.daiContract.approve('0x251B6f95F6A17D2aa350456f616a84b733380eBE', stakeAmount)
-      await this.contract.depositAndCommit(this.state.activity, distanceInMiles * 100, this.state.daysToStart, this.state.amountOfDays, stakeAmount, stakeAmount, String(this.props.code.athlete.id), {gasLimit: 5000000});
+      await this.contract.depositAndCommit(this.state.activity, distanceInMiles * 100, startTimestamp, endTimestamp, stakeAmount, stakeAmount, String(this.props.code.athlete.id), {gasLimit: 5000000});
     }
 
     this.setState({loading: false, txSent: true})
   }
-
-
-  showMode = (currentMode: string) => {
-    this.setState({show:true, mode: currentMode});
-  };
-
-  showDatepicker = () => {
-    this.showMode('date');
-  };
-
 
   getActivityName() {
     return this.state.activities.find((act: any) => act.value === this.state.activity).label;
@@ -168,7 +178,7 @@ export default class MakeCommitment extends Component <{next: any, account: any,
                     <View style={{flexDirection: "row", width: 300, padding: 10}}>
                         <Text style={{flex: 1, color: 'white', fontSize: 28, fontWeight: 'bold'}}>for</Text>
                         <View style={{flex: 1, flexDirection: 'row', marginLeft: 10}}>
-                            <TextInput style={{textAlign:'center', borderRadius: 5, backgroundColor: 'white', fontSize: 28, color: 'black', width: 30 + '%'}} onChangeText={text => this.setState({amountOfDays: Number(text)})}></TextInput><Text style={{flex: 1, color: 'white', fontSize: 28}}> day(s)</Text>
+                            <TextInput style={{textAlign:'center', borderRadius: 5, backgroundColor: 'white', fontSize: 28, color: 'black', width: 30 + '%'}} onChangeText={text => this.setState({duration: Number(text)})}></TextInput><Text style={{flex: 1, color: 'white', fontSize: 28}}> day(s)</Text>
                         </View>                    
                     </View>
                     <View>
@@ -205,7 +215,7 @@ export default class MakeCommitment extends Component <{next: any, account: any,
                     </View>
                     <View style={{flexDirection: "row", width: 300, padding: 10}}>
                         <Text style={{flex: 1, color: 'white', fontSize: 28, fontWeight: 'bold'}}>for</Text>
-                        <Text style={{flex: 1, color: 'white', fontSize: 28, marginLeft: 10}}>{this.state.amountOfDays} day(s)</Text>
+                        <Text style={{flex: 1, color: 'white', fontSize: 28, marginLeft: 10}}>{this.state.duration} day(s)</Text>
                     </View>
                 </View>
 
