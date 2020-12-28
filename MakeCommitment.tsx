@@ -1,20 +1,24 @@
 import React, { Component } from "react";
-import { View, StyleSheet, Image, Text, Button, TouchableOpacity, TextInput } from "react-native";
+import { View, StyleSheet, Image, Text, Button, TouchableOpacity, TextInput, Platform } from "react-native";
 import { ethers, utils } from 'ethers';
 import abi from './abi.json'
 import daiAbi from './daiAbi.json'
 import { Dimensions } from 'react-native';
 import DropDownPicker from 'react-native-dropdown-picker';
-
-export default class MakeCommitment extends Component <{next: any, account: any, code: any}, {txSent: Boolean, loading: Boolean, distance: Number, stake: Number, amountOfDays: Number, activity: {}, activities: any}> {
+export default class MakeCommitment extends Component <{next: any, account: any, code: any}, {startDate: any, endDate: any, focusedInput: any, txSent: Boolean, loading: Boolean, distance: Number, stake: Number, daysToStart: Number, amountOfDays: Number, activity: {}, activities: any}> {
   contract: any;
   daiContract: any;
+
   constructor(props) {
     super(props);
     
     this.state = {
-      distance: 0,
+      startDate: null,
+      endDate: null,
+      focusedInput: null,
+       distance: 0,
       stake: 0,
+      daysToStart: 0,
       amountOfDays: 0,
       loading: false,
       txSent: false,
@@ -90,14 +94,23 @@ export default class MakeCommitment extends Component <{next: any, account: any,
     
     const allowance = await this.daiContract.allowance(this.props.account.signingKey.address, '0x251B6f95F6A17D2aa350456f616a84b733380eBE');
     if(allowance.gte(stakeAmount)) {
-      await this.contract.depositAndCommit(this.state.activity, distanceInMiles * 100, startTime, this.state.amountOfDays, stakeAmount, stakeAmount, String(this.props.code.athlete.id), {gasLimit: 5000000});
+      await this.contract.depositAndCommit(this.state.activity, distanceInMiles * 100, this.state.daysToStart, this.state.amountOfDays, stakeAmount, stakeAmount, String(this.props.code.athlete.id), {gasLimit: 5000000});
     } else {
       await this.daiContract.approve('0x251B6f95F6A17D2aa350456f616a84b733380eBE', stakeAmount)
-      await this.contract.depositAndCommit(this.state.activity, distanceInMiles * 100, startTime, this.state.amountOfDays, stakeAmount, stakeAmount, String(this.props.code.athlete.id), {gasLimit: 5000000});
+      await this.contract.depositAndCommit(this.state.activity, distanceInMiles * 100, this.state.daysToStart, this.state.amountOfDays, stakeAmount, stakeAmount, String(this.props.code.athlete.id), {gasLimit: 5000000});
     }
 
     this.setState({loading: false, txSent: true})
   }
+
+
+  showMode = (currentMode: string) => {
+    this.setState({show:true, mode: currentMode});
+  };
+
+  showDatepicker = () => {
+    this.showMode('date');
+  };
 
 
   getActivityName() {
@@ -147,12 +160,20 @@ export default class MakeCommitment extends Component <{next: any, account: any,
                         </View>
                     </View>
                     <View style={{flexDirection: "row", width: 300, padding: 10}}>
-                        <Text style={{flex: 1, color: 'white', fontSize: 28, fontWeight: 'bold'}}>Deadline:</Text>
+                        <Text style={{flex: 1, color: 'white', fontSize: 28, fontWeight: 'bold'}}>Starting in</Text>
                         <View style={{flex: 1, flexDirection: 'row', marginLeft: 10}}>
-                            <TextInput style={{textAlign:'center', borderRadius: 5, backgroundColor: 'white', fontSize: 28, color: 'black', width: 30 + '%'}} onChangeText={text => this.setState({amountOfDays: Number(text)})}></TextInput><Text style={{flex: 1, color: 'white', fontSize: 28}}> Days</Text>
+                            <TextInput style={{textAlign:'center', borderRadius: 5, backgroundColor: 'white', fontSize: 28, color: 'black', width: 30 + '%'}} onChangeText={text => this.setState({daysToStart: Number(text)})}></TextInput><Text style={{flex: 1, color: 'white', fontSize: 28}}> day(s)</Text>
                         </View>                    
                     </View>
-                </View>
+                    <View style={{flexDirection: "row", width: 300, padding: 10}}>
+                        <Text style={{flex: 1, color: 'white', fontSize: 28, fontWeight: 'bold'}}>for</Text>
+                        <View style={{flex: 1, flexDirection: 'row', marginLeft: 10}}>
+                            <TextInput style={{textAlign:'center', borderRadius: 5, backgroundColor: 'white', fontSize: 28, color: 'black', width: 30 + '%'}} onChangeText={text => this.setState({amountOfDays: Number(text)})}></TextInput><Text style={{flex: 1, color: 'white', fontSize: 28}}> day(s)</Text>
+                        </View>                    
+                    </View>
+                    <View>
+                      </View>
+               </View>
 
                 <TouchableOpacity
                         style={{width: 300, height: 50, backgroundColor: '#D45353', alignItems: 'center', justifyContent: 'center'}}
@@ -179,8 +200,12 @@ export default class MakeCommitment extends Component <{next: any, account: any,
                         <Text style={{flex: 1, color: 'white', fontSize: 28, marginLeft: 10}}>{this.state.stake} Dai</Text>
                     </View>
                     <View style={{flexDirection: "row", width: 300, padding: 10}}>
-                        <Text style={{flex: 1, color: 'white', fontSize: 28, fontWeight: 'bold'}}>Deadline:</Text>
-                        <Text style={{flex: 1, color: 'white', fontSize: 28, marginLeft: 10}}>{this.state.amountOfDays} Days</Text>
+                        <Text style={{flex: 1, color: 'white', fontSize: 28, fontWeight: 'bold'}}>Starting in </Text>
+                        <Text style={{flex: 1, color: 'white', fontSize: 28, marginLeft: 10}}>{this.state.daysToStart} day(s)</Text>
+                    </View>
+                    <View style={{flexDirection: "row", width: 300, padding: 10}}>
+                        <Text style={{flex: 1, color: 'white', fontSize: 28, fontWeight: 'bold'}}>for</Text>
+                        <Text style={{flex: 1, color: 'white', fontSize: 28, marginLeft: 10}}>{this.state.amountOfDays} day(s)</Text>
                     </View>
                 </View>
 
